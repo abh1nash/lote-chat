@@ -13,7 +13,8 @@ $gray: rgba(100, 100, 100, 1);
 	height: 100vh;
 	text-align: center;
 	background: $white;
-	width: 120px;
+	width: 100%;
+	padding: 0;
 	box-shadow: 3px 0 10px 2px rgba(100, 100, 100, 0.1);
 	z-index: 10;
 	flex: 1;
@@ -23,7 +24,7 @@ $gray: rgba(100, 100, 100, 1);
 		h3 {
 			font-weight: 100;
 			font-size: 1.1em;
-			margin: 2em 0.25em;
+			margin: 2em 0 2em 0.5em;
 			b {
 				font-weight: 700;
 				text-transform: uppercase;
@@ -36,14 +37,16 @@ $gray: rgba(100, 100, 100, 1);
 	}
 	ul {
 		li {
+			width: 100%;
 			.btn {
-				width: 120px;
+				width: 100%;
 				height: 80px;
 				border-radius: 0px;
 				padding-top: 20px;
 				border: none;
 				font-size: 25px;
 				color: $gray;
+
 				&:hover,
 				&.active {
 					background: $primary;
@@ -58,10 +61,11 @@ $gray: rgba(100, 100, 100, 1);
 	.signout {
 		align-content: flex-end;
 		background: $primary;
-		margin: 0 10px 50px;
+		margin: 0 0 50px;
 		font-size: 0.9em;
 		border: none;
 		color: transparent;
+		border-radius: 0px;
 		background-clip: text;
 		&:hover {
 			background: $primary;

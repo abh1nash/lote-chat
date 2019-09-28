@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <TheNav />
+  <div class="d-flex">
+    <TheNav class="col-2 col-lg-1" />
   </div>
 </template>
 
