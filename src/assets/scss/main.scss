@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css?family=Be+Vietnam:100,400,700&display=swap");
+
+* {
+	font-family: "Be Vietnam", sans-serif;
+}
+
+$primary: linear-gradient(to bottom, purple, rgba(200, 30, 100, 1));
+$white: linear-gradient(to bottom, #fff, #eee);
+$gray: rgba(100, 100, 100, 1);
+
+.navigation {
+	display: flex;
+	height: 100vh;
+	text-align: center;
+	background: $white;
+	width: 120px;
+	box-shadow: 3px 0 10px 2px rgba(100, 100, 100, 0.1);
+	z-index: 10;
+	flex: 1;
+
+	.navbar-brand {
+		text-align: center;
+		h3 {
+			font-weight: 100;
+			font-size: 1.1em;
+			margin: 2em 0.25em;
+			b {
+				font-weight: 700;
+				text-transform: uppercase;
+				margin-left: -5px;
+				background: $primary;
+				color: transparent;
+				background-clip: text;
+			}
+		}
+	}
+	ul {
+		li {
+			.btn {
+				width: 120px;
+				height: 80px;
+				border-radius: 0px;
+				padding-top: 20px;
+				border: none;
+				font-size: 25px;
+				color: $gray;
+				&:hover,
+				&.active {
+					background: $primary;
+					color: #fff;
+				}
+			}
+		}
+	}
+	.gap {
+		flex: 1;
+	}
+	.signout {
+		align-content: flex-end;
+		background: $primary;
+		margin: 0 10px 50px;
+		font-size: 0.9em;
+		border: none;
+		color: transparent;
+		background-clip: text;
+		&:hover {
+			background: $primary;
+			color: #fff;
+		}
+	}
+}
