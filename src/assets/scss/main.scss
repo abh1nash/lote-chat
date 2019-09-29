@@ -53,6 +53,21 @@ $gray: rgba(100, 100, 100, 1);
 					color: #fff;
 				}
 			}
+			.notice {
+				position: relative;
+				&:after {
+					content: "";
+					display: block;
+					height: 15px;
+					width: 15px;
+					border-radius: 50%;
+					border: 2px solid #fff;
+					position: absolute;
+					left: 50%;
+					top: 55%;
+					background: #f25;
+				}
+			}
 		}
 	}
 	.gap {
@@ -88,6 +103,128 @@ header {
 
 .convo-list {
 	background: #efefef;
+	padding: 0;
+	position: relative;
+	overflow: hidden;
+	header {
+		margin: 0.5em 1em;
+		display: flex;
+		flex-direction: row;
+
+		h5 {
+			flex: 1;
+		}
+
+		.actions {
+			align-content: flex-end;
+
+			.btn {
+				height: 50px;
+				width: 50px;
+				border-radius: 50%;
+				color: $gray;
+				&:hover {
+					background: #fff;
+				}
+			}
+		}
+	}
+	.cr-list {
+		box-sizing: border-box;
+		position: absolute;
+		overflow-y: auto;
+		height: calc(100% - 80px);
+		.conversation {
+			display: flex;
+			flex-direction: column;
+			padding: 1em;
+			cursor: pointer;
+
+			&.active,
+			&.unread:hover,
+			&:hover {
+				background: #ddd;
+			}
+
+			// &.active {
+			// 	.cr-info {
+			// 		.convo-info {
+			// 			.convo-title {
+			// 				color: #000;
+			// 			}
+			// 		}
+			// 	}
+			// }
+
+			max-height: 200px;
+
+			&.unread {
+				background: #fff;
+				.cr-info {
+					.convo-info {
+						.convo-title {
+							color: #000;
+						}
+						.convo-last-msg {
+							color: #000;
+							font-style: oblique;
+						}
+					}
+				}
+			}
+
+			.cr-info {
+				display: flex;
+				flex-direction: row;
+				max-height: 100px;
+				.convo-icon {
+					background: #ccc;
+					min-width: 100px;
+					min-height: 100px;
+					border-radius: 50%;
+					img {
+						width: 100px;
+						height: 100px;
+						border-radius: 50%;
+						object-fit: cover;
+					}
+				}
+
+				.convo-info {
+					margin-left: 1em;
+
+					.convo-title {
+						font-size: 1.1em;
+						font-weight: 700;
+						white-space: nowrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						color: $gray;
+					}
+
+					.convo-last-msg {
+						height: 80px;
+						overflow: hidden;
+						line-clamp: 4;
+						color: $gray;
+					}
+				}
+			}
+			.extras {
+				display: flex;
+				flex-direction: row;
+
+				.gap {
+					flex: 1;
+				}
+
+				.time {
+					font-size: 0.7em;
+					color: #777;
+				}
+			}
+		}
+	}
 }
 
 .messages {
@@ -97,34 +234,135 @@ header {
 
 	header {
 		padding: 10px;
-		height: 80px;
+		height: 110px;
 		background: $primary;
 		color: #fff;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 
-		.cr-icon {
-			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			background: #fff;
-			color: purple;
-			font-size: 30px;
-			text-align: center;
+		.cr-info {
+			display: flex;
+			.cr-icon {
+				justify-self: center;
+				width: 80px;
+				height: 80px;
+				border-radius: 50%;
+				background: #fff;
+				color: purple;
+				font-size: 45px;
+				text-align: center;
 
-			img {
-				width: 50px;
-				height: 50px;
-				object-fit: cover;
-				border: 2px solid #fff;
+				img {
+					width: 80px;
+					height: 80px;
+					object-fit: cover;
+					border: 2px solid #fff;
+				}
 			}
-		}
 
-		.cr-title {
-			margin-left: 10px;
+			.cr-title {
+				margin-left: 10px;
+				h3 {
+					line-height: 12px;
+					margin-top: 5px;
+					font-size: 24px;
+					font-weight: 700;
+				}
+				.activity {
+					font-size: 0.8em;
+				}
+
+				.buttons {
+					margin-top: 8px;
+					.btn-white {
+						color: #fff;
+						border-radius: 50%;
+						border: 1px solid #fff;
+						height: 40px;
+						width: 40px;
+						margin-right: 20px;
+
+						&:hover {
+							color: purple;
+							background: #fff;
+						}
+					}
+				}
+			}
 		}
 	}
 
 	.chat-view {
 		flex: 1;
+		display: flex;
+		flex-direction: row;
+		align-items: flex-end;
+		// padding: 20px;
+		position: relative;
+		overflow: hidden;
+		box-sizing: content-box;
+		.container {
+			position: absolute;
+			overflow-y: scroll;
+			height: 100%;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+
+			.row {
+				display: flex;
+				flex-direction: column;
+
+				.msg-container {
+					align-self: flex-start;
+					max-width: 80%;
+					display: flex;
+					&.sent {
+						align-self: flex-end;
+
+						.msg-group {
+							background: purple;
+							color: #fff;
+
+							.msg-time {
+								text-align: right;
+								color: #fff;
+							}
+						}
+					}
+					.usr-img {
+						display: inline-block;
+						height: 50px;
+						width: 50px;
+						align-self: center;
+						transform: translateY(-10px);
+						img {
+							object-fit: cover;
+							border-radius: 50%;
+							height: 50px;
+							width: 50px;
+						}
+					}
+
+					.msg-group {
+						background: #fff;
+						box-shadow: 1px 0 5px 1px rgba(0, 0, 0, 0.1);
+						border-radius: 10px;
+						padding: 10px;
+						margin: 0 0 20px 10px;
+
+						.msg-time {
+							margin-top: 5px;
+							// font-style: oblique;
+							font-size: 0.6em;
+							color: $gray;
+							opacity: 0.7;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

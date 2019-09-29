@@ -7,11 +7,25 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
 	faUser,
 	faCommentDots,
-	faPaperPlane
+	faPaperPlane,
+	faPlus,
+	faSignInAlt,
+	faVideo,
+	faHeadphones,
+	faInfo
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUser, faCommentDots, faPaperPlane);
+library.add(
+	faInfo,
+	faHeadphones,
+	faVideo,
+	faUser,
+	faSignInAlt,
+	faPlus,
+	faCommentDots,
+	faPaperPlane
+);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

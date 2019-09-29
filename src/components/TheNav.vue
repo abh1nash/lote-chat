@@ -8,7 +8,7 @@
     </div>
     <ul class="nav">
       <li class="nav-item">
-        <a class="btn btn-outline-primary" href="#">
+        <a class="notice btn btn-outline-primary" href="#">
           <font-awesome-icon :icon="['fas', 'comment-dots']" />
         </a>
       </li>
