@@ -1,0 +1,44 @@
+import firebase from "firebase/app";
+import "firebase/firestore";
+
+export default {
+  addItemToDb({ commit }, { collection, document, data }) {
+    return new Promise((resolve, reject) => {
+      const db = firebase.firestore();
+
+      if (document) {
+        db.collection(collection)
+          .doc(document)
+          .set(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      } else {
+        db.collection(collection)
+          .add(data)
+          .then(docRef => {
+            resolve(docRef);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      }
+    });
+  },
+
+  checkExistence({}, { collection, document }) {
+    return new Promise((resolve, reject) => {
+      const db = firebase.firestore();
+
+      db.collection(collection)
+        .doc(document)
+        .get()
+        .then(snap => {
+          resolve(snap.exists);
+        });
+    });
+  }
+};
