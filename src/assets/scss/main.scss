@@ -8,6 +8,12 @@ $primary: linear-gradient(to bottom, purple, rgba(200, 30, 200, 1));
 $white: linear-gradient(to bottom, #fff, #eee);
 $gray: rgba(100, 100, 100, 1);
 
+.btn-primary {
+  background: $primary;
+  border: none;
+  border-radius: 20px;
+}
+
 .login {
   background: $white;
   width: 100vw;
@@ -115,18 +121,34 @@ $gray: rgba(100, 100, 100, 1);
   .gap {
     flex: 1;
   }
-  .signout {
+  .auth-user-info {
     align-content: flex-end;
-    background: $primary;
-    margin: 0 0 50px;
-    font-size: 0.9em;
-    border: none;
-    color: transparent;
-    border-radius: 0px;
-    background-clip: text;
-    &:hover {
+    .auth-user-avatar {
+      img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+      }
+    }
+
+    .auth-user-dname {
+      margin-top: 5px;
+      font-weight: 700;
+      font-size: 0.8em;
+      padding: 0 3px;
+    }
+    .signout {
       background: $primary;
-      color: #fff;
+      margin: 5px 0 50px;
+      font-size: 0.6em;
+      border: none;
+      color: transparent;
+      border-radius: 0px;
+      background-clip: text;
+      &:hover {
+        background: $primary;
+        color: #fff;
+      }
     }
   }
 }

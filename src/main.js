@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store/";
+import AppDate from "./components/AppDate";
 import "./registerServiceWorker";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -52,6 +53,7 @@ library.add(
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
+Vue.component("AppDate", AppDate);
 
 Vue.config.productionTip = false;
 

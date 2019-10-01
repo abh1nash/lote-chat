@@ -3,11 +3,15 @@
     <header>
       <h5>Conversations</h5>
       <div class="actions">
-        <button title="Create a new conversation" class="btn btn-white">
+        <button
+          @click.prevent="$emit('showModal', 'create', null)"
+          title="Create a new conversation"
+          class="btn btn-white"
+        >
           <font-awesome-icon :icon="['fas', 'plus']" />
         </button>
 
-        <button class="btn btn-white">
+        <button @click.prevent="$emit('showModal', 'join', null)" class="btn btn-white">
           <font-awesome-icon title="Join a conversation" :icon="['fas', 'sign-in-alt']" />
         </button>
       </div>

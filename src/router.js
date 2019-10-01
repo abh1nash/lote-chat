@@ -27,6 +27,13 @@ const router = new Router({
       }
     },
     {
+      path: "/logout",
+      name: "logout",
+      beforeEnter(to, from, next) {
+        store.dispatch("users/signOut").then(() => next({ name: "login" }));
+      }
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting

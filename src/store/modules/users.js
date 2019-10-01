@@ -1,11 +1,81 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-
+import Vue from "vue";
 export default {
   namespaced: true,
   state: {},
-  mutations: {},
+  mutations: {
+    setUser(state, { uid, data }) {
+      if (!state[uid]) {
+        state[uid] = {};
+      }
+      Vue.set(state, uid, data);
+    }
+  },
   actions: {
+    addChatroomToUser({ dispatch }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "updateDbItem",
+          {
+            collection: "users",
+            document: uid,
+            data: { [`chatrooms.${crId}`]: crId }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    addInviteToUser({ dispatch }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "updateDbItem",
+          {
+            collection: "users",
+            document: uid,
+            data: { [`invites.${crId}`]: crId }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    acceptInvite({ dispatch }, { crId, uid }) {
+      //delete invite entry from user db
+      //add chatroom to user's chatroom list
+      //delete user from chatroom's invite list
+      //add user to chatroom's members
+    },
+    updateLastActivity({ dispatch, rootState }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "updateDbItem",
+          {
+            collection: "users",
+            document: rootState.authUserId,
+            data: { lastActivity: Date.now() }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
     updateAuthUser({ commit }, uid) {
       commit("setItem", { name: "authUserId", value: uid }, { root: true });
     },
@@ -32,7 +102,9 @@ export default {
             ).then(isInDb => {
               if (isInDb) {
                 dispatch("updateAuthUser", user.uid);
-                resolve();
+                dispatch("updateLastActivity").then(() => {
+                  resolve();
+                });
               } else {
                 dispatch(
                   "addItemToDb",
@@ -59,7 +131,39 @@ export default {
             reject(err);
           });
       });
+    },
+
+    signOut({ dispatch }) {
+      return new Promise((resolve, reject) => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            dispatch("updateAuthUser", null);
+            resolve();
+          })
+          .catch(err => reject(err));
+      });
+    },
+
+    fetchUser({ dispatch, commit }, uid) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "fetchDbItem",
+          { collection: "users", document: uid },
+          { root: true }
+        )
+          .then(doc => {
+            commit("setUser", { uid: doc.uid, data: doc });
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
     }
   },
-  getters: {}
+  getters: {
+    userInfo: state => uid => state[uid]
+  }
 };

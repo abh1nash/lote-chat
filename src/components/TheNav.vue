@@ -19,12 +19,36 @@
       </li>
     </ul>
     <div class="gap"></div>
-    <a href class="btn btn-danger signout">Sign Out</a>
+    <div v-if="asyncDataStatus_ready" class="auth-user-info">
+      <div class="auth-user-avatar">
+        <img :src="user(authId).avatar" :alt="user(authId).name" class="avatar" />
+      </div>
+      <div class="auth-user-dname">{{user(authId).name}}</div>
+      <router-link :to="{name: 'logout'}" class="btn btn-danger signout">Sign Out</router-link>
+    </div>
   </nav>
 </template>
 
 <script>
-export default {};
+import asyncDataStatus from "@/mixins/asyncDataStatus";
+import { mapGetters } from "vuex";
+export default {
+  mixins: [asyncDataStatus],
+
+  created() {
+    this.$store
+      .dispatch("users/fetchUser", this.$store.state.authUserId)
+      .then(() => {
+        this.fetched();
+      });
+  },
+  computed: {
+    ...mapGetters({
+      user: "users/userInfo",
+      authId: "authUser"
+    })
+  }
+};
 </script>
 
 <style>
