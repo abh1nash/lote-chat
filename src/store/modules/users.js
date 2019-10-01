@@ -52,10 +52,87 @@ export default {
       });
     },
     acceptInvite({ dispatch }, { crId, uid }) {
-      //delete invite entry from user db
-      //add chatroom to user's chatroom list
-      //delete user from chatroom's invite list
-      //add user to chatroom's members
+      return new Promise((resolve, reject) => {
+        //delete invite entry from user db
+        const deleteInvite = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "users",
+            document: uid,
+            fieldValue: [`invites.${crId}`]
+          },
+          { root: true }
+        );
+        //add chatroom to user's chatroom list
+        const addChatroomToUser = dispatch("addChatroomToUser", { crId, uid });
+        //delete user from chatroom's invite list
+        const deleteInviteFromChatroom = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "chatrooms",
+            document: crId,
+            fieldValue: [`invited.${uid}`]
+          },
+          { root: true }
+        );
+        //add user to chatroom's members
+        const addUserToChatroom = dispatch(
+          "updateDbItem",
+          {
+            collection: "chatrooms",
+            document: crId,
+            data: { [`members.${uid}`]: uid }
+          },
+          { root: true }
+        );
+
+        Promise.all([
+          deleteInvite,
+          addChatroomToUser,
+          deleteInviteFromChatroom,
+          addUserToChatroom
+        ])
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    checkMembershipEligibility({ dispatch }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          //check existence of chatroom
+          "checkExistence",
+          { collection: "chatrooms", document: crId },
+          { root: true }
+        )
+          .then(exists => {
+            if (exists) {
+              dispatch(
+                "checkExistence",
+                {
+                  //check if user is invited to the chatroom
+                  collection: "chatrooms",
+                  data: { field: `invited.${uid}`, opStr: "==", value: uid }
+                },
+                { root: true }
+              ).then(({ exists }) => {
+                if (exists) {
+                  resolve(true);
+                } else {
+                  resolve(false);
+                }
+              });
+            } else {
+              resolve(false);
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
     },
     updateLastActivity({ dispatch, rootState }) {
       return new Promise((resolve, reject) => {

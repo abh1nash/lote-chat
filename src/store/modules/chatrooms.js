@@ -35,7 +35,8 @@ export default {
                 initiator: authUserId,
                 invited: {
                   [`${newUserId}`]: newUserId
-                }
+                },
+                msgCount: 0
               };
 
               dispatch(

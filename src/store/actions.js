@@ -71,6 +71,23 @@ export default {
     });
   },
 
+  deleteFieldValue({}, { collection, document, fieldValue }) {
+    return new Promise((resolve, reject) => {
+      const db = firebase.firestore();
+      db.collection(collection)
+        .doc(document)
+        .update({
+          [`${fieldValue}`]: firebase.firestore.FieldValue.delete()
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  },
+
   fetchDbItem({}, { collection, document }) {
     return new Promise((resolve, reject) => {
       const db = firebase.firestore();

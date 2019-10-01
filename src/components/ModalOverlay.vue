@@ -3,7 +3,7 @@
     <div class="modal-container">
       <button @click="$emit('closeModal')" class="close-btn btn btn-outline-danger">&#x2715;</button>
       <CreateConversation v-if="type=='create'" />
-      <JoinConversation v-if="type=='join'" />
+      <JoinConversation v-if="type=='join'" @eventSuccess="$emit('closeModal')" />
     </div>
   </div>
 </template>
