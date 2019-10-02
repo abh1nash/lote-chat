@@ -1,0 +1,208 @@
+<template>
+  <div
+    @click="toggleActive"
+    v-if="asyncDataStatus_ready"
+    :class="[{'active':active}, {'unread':unread},'conversation']"
+  >
+    <div class="cr-info">
+      <div class="convo-icon">
+        <img :src="avatar" :alt="title" />
+      </div>
+      <div class="convo-info">
+        <div class="convo-title">{{title}}</div>
+        <div v-if="lastMsg && !invite" class="convo-last-msg">{{lastMsg}}</div>
+        <div v-else-if="!lastMsg && !invite" class="convo-last-msg null">No messages yet.</div>
+        <div v-else class="convo-invite">
+          <div class="invitation">Invitation for Conversation</div>
+          <div class="actions">
+            <button @click="acceptInvite" class="btn btn-success">Accept</button>
+            <button @click="declineInvite" class="btn btn-danger">Decline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="extras">
+      <div class="gap"></div>
+      <div class="time">
+        <AppDate :date="lastMsgTime" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import asyncDataStatus from "@/mixins/asyncDataStatus";
+export default {
+  mixins: [asyncDataStatus],
+  props: {
+    crId: {
+      required: true
+    },
+    invite: {
+      type: Boolean
+    }
+  },
+  methods: {
+    acceptInvite() {
+      this.$store
+        .dispatch("users/acceptInvite", {
+          crId: this.crId,
+          uid: this.$store.state.authUserId
+        })
+        .then(() => {
+          console.log("accepted invite");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    declineInvite() {
+      this.$store
+        .dispatch("users/declineInvite", {
+          crId: this.crId,
+          uid: this.$store.state.authUserId
+        })
+        .then(() => {
+          console.log("invite deleted");
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    toggleActive() {
+      if (this.$store.state.activeConversation != this.crId) {
+        this.$store.dispatch("updateActiveRoom", this.crId);
+      } else {
+        this.$store.dispatch("updateActiveRoom", null);
+      }
+    },
+
+    deleteChatroom() {
+      this.$store
+        .dispatch("chatrooms/deleteChatroom", {
+          crId: this.crId,
+          uid: this.$store.state.authUserId
+        })
+        .then(() => {
+          this.fetched();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  computed: {
+    unread() {
+      return false; //to be coded later
+    },
+    active() {
+      return this.crId == this.$store.state.activeConversation;
+    },
+    conversation() {
+      return this.$store.state.chatrooms[this.crId];
+    },
+    lastMsg() {
+      return this.conversation.lastMsg;
+    },
+    lastMsgTime() {
+      return this.conversation.lastMsgTime;
+    },
+    title() {
+      if (this.conversation.title.length > 0) {
+        return this.conversation.title;
+      } else if (
+        this.conversation.title.length == 0 &&
+        this.conversation.type == "single"
+      ) {
+        let title;
+        this.members.forEach(member => {
+          if (member != this.$store.state.authUserId) {
+            title = this.$store.state.users[member].name;
+          }
+        });
+
+        if (!title) {
+          this.invited.forEach(member => {
+            if (member != this.$store.state.authUserId) {
+              title = this.$store.state.users[member].name;
+            }
+          });
+        }
+
+        return title;
+      } else {
+        return "An Untitled Group";
+      }
+    },
+    avatar() {
+      if (this.conversation.type == "single") {
+        let otherUser;
+        this.members.forEach(member => {
+          if (member != this.$store.state.authUserId) {
+            otherUser = member;
+          }
+        });
+        if (!otherUser) {
+          this.invited.forEach(member => {
+            if (member != this.$store.state.authUserId) {
+              otherUser = member;
+            }
+          });
+        }
+        // console.log(otherUser);
+        return otherUser ? this.$store.state.users[otherUser].avatar : null;
+      } else if (this.conversation.avatar) {
+        return this.conversation.avatar;
+      }
+    },
+    members() {
+      return Object.keys(this.conversation.members);
+    },
+    invited() {
+      return Object.keys(this.conversation.invited);
+    }
+  },
+  created() {
+    this.$store
+      .dispatch("chatrooms/fetchChatroom", this.crId)
+      .then(({ members, invited }) => {
+        this.$store.dispatch("chatrooms/listenChatroom", this.crId);
+
+        const associatedUsers = [
+          ...Object.keys(members),
+          ...Object.keys(invited)
+        ];
+
+        if (associatedUsers.length < 2) {
+          this.deleteChatroom();
+        } else {
+          let fetchUsers = associatedUsers.map(user => {
+            return new Promise((resolve, reject) => {
+              this.$store
+                .dispatch("users/fetchUser", user)
+                .then(() => {
+                  this.$store.dispatch("users/listenUser", user);
+                  resolve();
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            });
+          });
+
+          Promise.all(fetchUsers)
+            .then(() => {
+              this.fetched();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
+  }
+};
+</script>
+
+<style>
+</style>

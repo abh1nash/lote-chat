@@ -17,84 +17,44 @@
       </div>
     </header>
     <div class="cr-list">
-      <div class="active conversation">
-        <div class="cr-info">
-          <div class="convo-icon"></div>
-          <div class="convo-info">
-            <div class="convo-title">Lote's Favorite Group</div>
-            <div
-              class="convo-last-msg"
-            >k saro hepeko hou malai aruko billa handa chai hudaina tmerlai yo sangeet jhan ma chai arule usko billa garda ni support garxu uhh chai merai billa gardai basxa</div>
-          </div>
-        </div>
-        <div class="extras">
-          <div class="gap"></div>
-          <div class="time">2 hrs ago</div>
-        </div>
-      </div>
-
-      <div class="conversation">
-        <div class="cr-info">
-          <div class="convo-icon"></div>
-          <div class="convo-info">
-            <div class="convo-title">Sangeet Giri</div>
-            <div class="convo-last-msg">ahile ta sanchai xa</div>
-          </div>
-        </div>
-        <div class="extras">
-          <div class="gap"></div>
-          <div class="time">10 mins ago</div>
-        </div>
-      </div>
-
-      <div class="unread conversation">
-        <div class="cr-info">
-          <div class="convo-icon"></div>
-          <div class="convo-info">
-            <div class="convo-title">Roshan Timsina</div>
-            <div class="convo-last-msg">oe kaha xau ahile</div>
-          </div>
-        </div>
-        <div class="extras">
-          <div class="gap"></div>
-          <div class="time">1 hr ago</div>
-        </div>
-      </div>
-
-      <div class="conversation">
-        <div class="cr-info">
-          <div class="convo-icon"></div>
-          <div class="convo-info">
-            <div class="convo-title">Anisha Karki</div>
-            <div class="convo-last-msg">hello</div>
-          </div>
-        </div>
-        <div class="extras">
-          <div class="gap"></div>
-          <div class="time">a moment ago</div>
-        </div>
-      </div>
-
-      <div class="conversation">
-        <div class="cr-info">
-          <div class="convo-icon"></div>
-          <div class="convo-info">
-            <div class="convo-title">Bishal Dahal</div>
-            <div class="convo-last-msg">voli colz jaane?</div>
-          </div>
-        </div>
-        <div class="extras">
-          <div class="gap"></div>
-          <div class="time">a moment ago</div>
-        </div>
-      </div>
+      <ConversationListItem
+        v-for="invitation in invitesList"
+        :crId="invitation"
+        :key="invitation"
+        :invite="true"
+      />
+      <ConversationListItem
+        @click="toggleActive(conversation)"
+        v-for="conversation in conversationList"
+        :crId="conversation"
+        :key="conversation"
+      />
     </div>
   </div>
 </template>
-
 <script>
-export default {};
-</script>
+import ConversationListItem from "./ConversationListItem";
 
-<style>
-</style>
+export default {
+  components: {
+    ConversationListItem
+  },
+
+  computed: {
+    user() {
+      return this.$store.state.users[this.authId];
+    },
+
+    authId() {
+      return this.$store.state.authUserId;
+    },
+
+    conversationList() {
+      return this.user.chatrooms ? Object.keys(this.user.chatrooms) : [];
+    },
+    invitesList() {
+      return this.user.invites ? Object.keys(this.user.invites) : [];
+    }
+  }
+};
+</script>

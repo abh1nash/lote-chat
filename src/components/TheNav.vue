@@ -19,11 +19,11 @@
       </li>
     </ul>
     <div class="gap"></div>
-    <div v-if="asyncDataStatus_ready" class="auth-user-info">
+    <div class="auth-user-info">
       <div class="auth-user-avatar">
-        <img :src="user(authId).avatar" :alt="user(authId).name" class="avatar" />
+        <img :src="avatar" :alt="displayName" class="avatar" />
       </div>
-      <div class="auth-user-dname">{{user(authId).name}}</div>
+      <div class="auth-user-dname">{{displayName}}</div>
       <router-link :to="{name: 'logout'}" class="btn btn-danger signout">Sign Out</router-link>
     </div>
   </nav>
@@ -31,22 +31,20 @@
 
 <script>
 import asyncDataStatus from "@/mixins/asyncDataStatus";
-import { mapGetters } from "vuex";
+
 export default {
   mixins: [asyncDataStatus],
 
-  created() {
-    this.$store
-      .dispatch("users/fetchUser", this.$store.state.authUserId)
-      .then(() => {
-        this.fetched();
-      });
-  },
   computed: {
-    ...mapGetters({
-      user: "users/userInfo",
-      authId: "authUser"
-    })
+    authUser() {
+      return this.$store.state.users[this.$store.state.authUserId];
+    },
+    displayName() {
+      return this.authUser.name;
+    },
+    avatar() {
+      return this.authUser.avatar;
+    }
   }
 };
 </script>

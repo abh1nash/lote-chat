@@ -4,14 +4,7 @@ import Vue from "vue";
 export default {
   namespaced: true,
   state: {},
-  mutations: {
-    setUser(state, { uid, data }) {
-      if (!state[uid]) {
-        state[uid] = {};
-      }
-      Vue.set(state, uid, data);
-    }
-  },
+  mutations: {},
   actions: {
     addChatroomToUser({ dispatch }, { crId, uid }) {
       return new Promise((resolve, reject) => {
@@ -21,6 +14,25 @@ export default {
             collection: "users",
             document: uid,
             data: { [`chatrooms.${crId}`]: crId }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    deleteChatroomFromUser({ dispatch }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "deleteFieldValue",
+          {
+            collection: "users",
+            document: uid,
+            fieldValue: [`chatrooms.${crId}`]
           },
           { root: true }
         )
@@ -100,6 +112,47 @@ export default {
           });
       });
     },
+    declineInvite({ dispatch, rootGetters }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        const deleteInvite = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "users",
+            document: uid,
+            fieldValue: [`invites.${crId}`]
+          },
+          { root: true }
+        );
+        const deleteInviteFromChatroom = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "chatrooms",
+            document: crId,
+            fieldValue: [`invited.${uid}`]
+          },
+          { root: true }
+        );
+        Promise.all([deleteInvite, deleteInviteFromChatroom])
+          .then(() => {
+            if (rootGetters["chatrooms/chatroomAssociatedUsers"](crId) < 2) {
+              dispatch(
+                "chatrooms/deleteChatroom",
+                { crId, uid: rootGetters["chatrooms/chatroomInitiator"](crId) },
+                { root: true }
+              )
+                .then(() => {
+                  resolve();
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            }
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
     checkMembershipEligibility({ dispatch }, { crId, uid }) {
       return new Promise((resolve, reject) => {
         dispatch(
@@ -169,7 +222,9 @@ export default {
               phone: result.user.phoneNumber || null,
               avatar: result.user.photoURL,
               uid: result.user.uid,
-              registeredAt: parseInt(result.user.metadata.a)
+              registeredAt: parseInt(result.user.metadata.a),
+              invites: {},
+              chatrooms: {}
             };
 
             dispatch(
@@ -223,6 +278,17 @@ export default {
       });
     },
 
+    listenUser({ dispatch }, uid) {
+      dispatch(
+        "listenDoc",
+        {
+          collection: "users",
+          document: uid
+        },
+        { root: true }
+      );
+    },
+
     fetchUser({ dispatch, commit }, uid) {
       return new Promise((resolve, reject) => {
         dispatch(
@@ -231,7 +297,11 @@ export default {
           { root: true }
         )
           .then(doc => {
-            commit("setUser", { uid: doc.uid, data: doc });
+            commit(
+              "setItem",
+              { parent: "users", name: doc.uid, value: doc },
+              { root: true }
+            );
             resolve();
           })
           .catch(err => {

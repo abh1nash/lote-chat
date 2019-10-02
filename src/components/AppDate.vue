@@ -1,5 +1,5 @@
 <template>
-  <span>{{parsedDate}}</span>
+  <span :title="fullDate">{{parsedDate}}</span>
 </template>
 
 <script>
@@ -15,13 +15,18 @@ export default {
       parsedDate: ""
     };
   },
+  computed: {
+    fullDate() {
+      return moment(this.date);
+    }
+  },
   methods: {
     dateFromNow() {
       this.parsedDate = moment(this.date).fromNow();
     }
   },
   mounted() {
-    setInterval(this.dateFromNow(), 1000);
+    setInterval(this.dateFromNow, 1000);
   }
 };
 </script>

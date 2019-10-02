@@ -71,6 +71,34 @@ export default {
     });
   },
 
+  listenDoc({ commit }, { collection, document }) {
+    const db = firebase.firestore();
+
+    db.collection(collection)
+      .doc(document)
+      .onSnapshot(doc => {
+        console.log(doc.data());
+        commit("setItem", {
+          parent: collection,
+          name: document,
+          value: doc.data()
+        });
+      });
+  },
+  deleteDoc({}, { collection, document }) {
+    return new Promise((resolve, reject) => {
+      const db = firebase.firestore();
+      db.collection(collection)
+        .doc(document)
+        .delete()
+        .then(() => {
+          resolve();
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  },
   deleteFieldValue({}, { collection, document, fieldValue }) {
     return new Promise((resolve, reject) => {
       const db = firebase.firestore();
@@ -86,6 +114,9 @@ export default {
           reject(err);
         });
     });
+  },
+  updateActiveRoom({ commit }, crId) {
+    commit("setItem", { name: "activeConversation", value: crId });
   },
 
   fetchDbItem({}, { collection, document }) {

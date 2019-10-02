@@ -40,8 +40,10 @@ export default {
         })
         .then(crId => {
           console.log(crId);
-        }).catch(err=>{
-          console.log(err)
+          this.$emit("eventSuccess");
+        })
+        .catch(err => {
+          console.log(err);
         });
     }
   }

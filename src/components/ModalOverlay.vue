@@ -2,7 +2,7 @@
   <div @click.self.prevent="$emit('closeModal')" class="modal">
     <div class="modal-container">
       <button @click="$emit('closeModal')" class="close-btn btn btn-outline-danger">&#x2715;</button>
-      <CreateConversation v-if="type=='create'" />
+      <CreateConversation v-if="type=='create'" @eventSuccess="$emit('closeModal')" />
       <JoinConversation v-if="type=='join'" @eventSuccess="$emit('closeModal')" />
     </div>
   </div>

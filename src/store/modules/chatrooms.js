@@ -3,6 +3,72 @@ export default {
   state: {},
   mutations: {},
   actions: {
+    listenChatroom({ dispatch }, crId) {
+      dispatch(
+        "listenDoc",
+        { collection: "chatrooms", document: crId },
+        { root: true }
+      );
+    },
+    fetchChatroom({ dispatch, commit }, crId) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "fetchDbItem",
+          { collection: "chatrooms", document: crId },
+          { root: true }
+        )
+          .then(doc => {
+            commit(
+              "setItem",
+              { parent: "chatrooms", name: crId, value: doc },
+              { root: true }
+            );
+            resolve(doc);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    deleteChatroom({ dispatch }, { crId, uid }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "checkExistence",
+          {
+            collection: "chatrooms",
+            document: crId
+          },
+          { root: true }
+        ).then(exists => {
+          if (exists) {
+            const removeUserFromChatroom = dispatch(
+              "users/deleteChatroomFromUser",
+              { crId, uid },
+              { root: true }
+            );
+            const deleteChatroom = dispatch(
+              "deleteDoc",
+              { collection: "chatrooms", document: crId },
+              { root: true }
+            );
+
+            Promise.all([removeUserFromChatroom, deleteChatroom])
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+          } else {
+            reject(
+              new Error(
+                "The chatroom does not exist or has already been removed."
+              )
+            );
+          }
+        });
+      });
+    },
     createConversation({ dispatch, rootState, rootGetters }, { title, email }) {
       return new Promise((resolve, reject) => {
         dispatch(
@@ -36,7 +102,9 @@ export default {
                 invited: {
                   [`${newUserId}`]: newUserId
                 },
-                msgCount: 0
+                msgCount: 0,
+                lastMsg: null,
+                lastMsgTime: Date.now()
               };
 
               dispatch(
@@ -82,5 +150,10 @@ export default {
       });
     }
   },
-  getters: {}
+  getters: {
+    chatroomAssociatedUsers: state => crId =>
+      Object.keys(state[crId].members).length +
+      Object.keys(state[crId].invited).length,
+    chatroomInitiator: state => crId => state[crId].initiator
+  }
 };

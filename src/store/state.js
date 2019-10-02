@@ -1,3 +1,4 @@
 export default {
-  authUserId: ""
+  authUserId: "",
+  activeConversation: ""
 };

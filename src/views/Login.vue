@@ -23,7 +23,15 @@ export default {
       this.$store
         .dispatch("users/googleLogin")
         .then(() => {
-          this.$router.push({ name: "chat" });
+          this.$store
+            .dispatch("users/fetchUser", this.$store.state.authUserId)
+            .then(() => {
+              this.$store.dispatch(
+                "users/listenUser",
+                this.$store.state.authUserId
+              );
+              this.$router.push({ name: "chat" });
+            });
         })
         .catch(err => {
           console.log(err);
