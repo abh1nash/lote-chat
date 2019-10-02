@@ -173,7 +173,9 @@ export default {
               this.$store
                 .dispatch("users/fetchUser", user)
                 .then(() => {
-                  this.$store.dispatch("users/listenUser", user);
+                  if (user != this.$store.state.authUserId) {
+                    this.$store.dispatch("users/listenUser", user);
+                  }
                   resolve();
                 })
                 .catch(err => {

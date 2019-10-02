@@ -37,9 +37,7 @@
     </header>
 
     <div class="chat-view">
-      <div v-if="displayMsgs" class="container" ref="container">
-        <MessageListItem v-for="(msg, index) in messagesList" :msg="msg" :key="index" />
-      </div>
+      <MessagesContainer v-if="displayMsgs" />
     </div>
 
     <MessageForm />
@@ -49,22 +47,12 @@
 <script>
 import { mapGetters } from "vuex";
 import MessageForm from "./MessageForm";
-import MessageListItem from "./MessageListItem";
+import MessagesContainer from "./MessagesContainer";
+
 export default {
   components: {
     MessageForm,
-    MessageListItem
-  },
-  methods: {
-    updateScroll(el) {
-      el.scrollTop = el.scrollHeight;
-    }
-  },
-  mounted() {
-    this.updateScroll(this.$refs["container"]);
-  },
-  updated() {
-    this.updateScroll(this.$refs["container"]);
+    MessagesContainer
   },
 
   computed: {
@@ -76,9 +64,6 @@ export default {
     }),
     displayMsgs() {
       return this.$store.state.msgsReady;
-    },
-    messagesList() {
-      return this.msgs(this.activeConversation);
     }
   }
 };
