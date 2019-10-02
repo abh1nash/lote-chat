@@ -71,8 +71,23 @@ export default {
     },
 
     toggleActive() {
+      if (this.$store.state.msgsReady) {
+        this.$store.dispatch("msgsNotReady");
+      }
       if (this.$store.state.activeConversation != this.crId) {
+        if (this.$store.state.activeConversation) {
+          this.$store.dispatch("messages/listenMessages", true); //stop listener
+        }
         this.$store.dispatch("updateActiveRoom", this.crId);
+        this.$store
+          .dispatch("messages/fetchMessages")
+          .then(() => {
+            this.$store.dispatch("messages/listenMessages"); //start listener
+            this.$store.dispatch("msgsReady");
+          })
+          .catch(err => {
+            console.log(err);
+          });
       } else {
         this.$store.dispatch("updateActiveRoom", null);
       }
@@ -109,31 +124,7 @@ export default {
       return this.conversation.lastMsgTime;
     },
     title() {
-      if (this.conversation.title.length > 0) {
-        return this.conversation.title;
-      } else if (
-        this.conversation.title.length == 0 &&
-        this.conversation.type == "single"
-      ) {
-        let title;
-        this.members.forEach(member => {
-          if (member != this.$store.state.authUserId) {
-            title = this.$store.state.users[member].name;
-          }
-        });
-
-        if (!title) {
-          this.invited.forEach(member => {
-            if (member != this.$store.state.authUserId) {
-              title = this.$store.state.users[member].name;
-            }
-          });
-        }
-
-        return title;
-      } else {
-        return "An Untitled Group";
-      }
+      return this.$store.getters["chatrooms/chatroomTitle"](this.crId);
     },
     avatar() {
       if (this.conversation.type == "single") {

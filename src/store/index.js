@@ -8,13 +8,15 @@ import getters from "./getters";
 
 import chatrooms from "./modules/chatrooms";
 import users from "./modules/users";
+import messages from "./modules/messages";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
     chatrooms,
-    users
+    users,
+    messages
   },
   state,
   mutations,

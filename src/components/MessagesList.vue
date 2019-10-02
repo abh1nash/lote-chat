@@ -1,13 +1,22 @@
 <template>
   <div class="messages">
+    <div v-if="!activeConversation" class="overlay">
+      <div class="text-info-white">Select a Conversation to begin!</div>
+    </div>
     <header>
       <div class="cr-info">
         <div class="cr-icon">
           <font-awesome-icon :icon="['fas', 'user']" />
         </div>
         <div class="cr-title">
-          <h3>Lote's Favorite Group</h3>
-          <div class="activity">Active 5 minutes ago</div>
+          <h3>{{activeTitle(activeConversation) || 'No conversation active.'}}</h3>
+          <div class="activity">
+            <span v-if="activeConversation">
+              Active
+              <AppDate :date="activeTime" />
+            </span>
+            <span v-else>You can see your conversations here.</span>
+          </div>
           <div class="actions">
             <div class="buttons">
               <button title="Video Call" class="btn btn-white">
@@ -28,97 +37,8 @@
     </header>
 
     <div class="chat-view">
-      <div class="container" ref="container">
-        <div class="row">
-          <div class="msg-container">
-            <div class="usr-img">
-              <img src="https://placeimg.com/500/500/people" />
-            </div>
-            <div class="msg-group">
-              <div class="msg">I am a message</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container sent">
-            <div class="msg-group">
-              <div class="msg">Yeah, I got that. Can you elaborate?</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container">
-            <div class="usr-img">
-              <img src="https://placeimg.com/500/500/people" />
-            </div>
-            <div class="msg-group">
-              <div class="msg">Howdy, mate?</div>
-              <div class="msg">alright?</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container sent">
-            <div class="msg-group">
-              <div class="msg">Pretty Good</div>
-              <div class="msg">how 'bout you</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container">
-            <div class="usr-img">
-              <img src="https://placeimg.com/500/500/people" />
-            </div>
-            <div class="msg-group">
-              <div class="msg">me too</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container sent">
-            <div class="msg-group">
-              <div class="msg">Yeah, I got that. Can you elaborate?</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container">
-            <div class="usr-img">
-              <img src="https://placeimg.com/500/500/people" />
-            </div>
-            <div class="msg-group">
-              <div class="msg">me too</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="msg-container">
-            <div class="usr-img">
-              <img src="https://placeimg.com/500/500/people" />
-            </div>
-            <div class="msg-group">
-              <div
-                class="msg"
-              >k saro hepeko hou malai aruko billa handa chai hudaina tmerlai yo sangeet jhan ma chai arule usko billa garda ni support garxu uhh chai merai billa gardai basxa</div>
-              <div class="msg-time">a moment ago</div>
-            </div>
-          </div>
-        </div>
+      <div v-if="displayMsgs" class="container" ref="container">
+        <MessageListItem v-for="(msg, index) in messagesList" :msg="msg" :key="index" />
       </div>
     </div>
 
@@ -127,10 +47,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import MessageForm from "./MessageForm";
+import MessageListItem from "./MessageListItem";
 export default {
   components: {
-    MessageForm
+    MessageForm,
+    MessageListItem
   },
   methods: {
     updateScroll(el) {
@@ -139,6 +62,24 @@ export default {
   },
   mounted() {
     this.updateScroll(this.$refs["container"]);
+  },
+  updated() {
+    this.updateScroll(this.$refs["container"]);
+  },
+
+  computed: {
+    ...mapGetters({
+      activeConversation: "activeConversation",
+      activeTitle: "chatrooms/chatroomTitle",
+      activeTime: "activeTime",
+      msgs: "messages/msgs"
+    }),
+    displayMsgs() {
+      return this.$store.state.msgsReady;
+    },
+    messagesList() {
+      return this.msgs(this.activeConversation);
+    }
   }
 };
 </script>

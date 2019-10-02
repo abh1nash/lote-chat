@@ -26,6 +26,7 @@ export default {
     }
   },
   mounted() {
+    this.dateFromNow();
     setInterval(this.dateFromNow, 1000);
   }
 };

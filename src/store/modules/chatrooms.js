@@ -69,6 +69,7 @@ export default {
         });
       });
     },
+
     createConversation({ dispatch, rootState, rootGetters }, { title, email }) {
       return new Promise((resolve, reject) => {
         dispatch(
@@ -154,6 +155,38 @@ export default {
     chatroomAssociatedUsers: state => crId =>
       Object.keys(state[crId].members).length +
       Object.keys(state[crId].invited).length,
-    chatroomInitiator: state => crId => state[crId].initiator
+    chatroomInitiator: state => crId => state[crId].initiator,
+    chatroomInfo: state => crId => state[crId],
+    chatroomTitle(state, getters, rootState, rootGetters) {
+      return crId => {
+        if (!crId) {
+          return "No conversation selected.";
+        } else if (state[crId].title.length > 0) {
+          return state[crId].title;
+        } else if (
+          state[crId].title.length == 0 &&
+          state[crId].type == "single"
+        ) {
+          let title;
+          Object.keys(state[crId].members).forEach(member => {
+            if (member != rootGetters["authUser"]) {
+              title = rootGetters["users/userInfo"](member).name;
+            }
+          });
+
+          if (!title) {
+            Object.keys(state[crId].invited).forEach(member => {
+              if (member != rootGetters["authUser"]) {
+                title = rootGetters["users/userInfo"](member).name;
+              }
+            });
+          }
+
+          return title;
+        } else {
+          return "An Untitled Group";
+        }
+      };
+    }
   }
 };

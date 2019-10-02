@@ -115,10 +115,28 @@ export default {
         });
     });
   },
-  updateActiveRoom({ commit }, crId) {
+  updateActiveRoom({ commit, getters }, crId) {
     commit("setItem", { name: "activeConversation", value: crId });
+
+    if (crId) {
+      commit("setItem", {
+        name: "activeWindowTitle",
+        value: getters["chatrooms/chatroomInfo"](crId).title
+      });
+      commit("setItem", {
+        name: "activeWindowTime",
+        value: getters["chatrooms/chatroomInfo"](crId).lastMsgTime
+      });
+    }
   },
 
+  msgsNotReady({ commit }) {
+    commit("setItem", { name: "msgsReady", value: false });
+  },
+
+  msgsReady({ commit }) {
+    commit("setItem", { name: "msgsReady", value: true });
+  },
   fetchDbItem({}, { collection, document }) {
     return new Promise((resolve, reject) => {
       const db = firebase.firestore();
