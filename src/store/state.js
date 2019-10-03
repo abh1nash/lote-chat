@@ -3,5 +3,6 @@ export default {
   activeConversation: null,
   activeWindowTitle: null,
   activeWindowTime: 0,
-  msgsReady: false
+  msgsReady: false,
+  unreadMsg: false
 };

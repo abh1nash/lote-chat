@@ -137,6 +137,9 @@ export default {
   msgsReady({ commit }) {
     commit("setItem", { name: "msgsReady", value: true });
   },
+  notify({ commit }, value) {
+    commit("setMsgNotice", value);
+  },
   fetchDbItem({}, { collection, document }) {
     return new Promise((resolve, reject) => {
       const db = firebase.firestore();

@@ -16,12 +16,15 @@ export default {
   actions: {
     sendMessage({ dispatch, rootGetters }, msg) {
       return new Promise((resolve, reject) => {
+        const activeUser = rootGetters["authUser"];
+        const activeCr = rootGetters["activeConversation"];
+
         const msgData = {
           content: msg.content,
           type: msg.type,
           mediaUrl: msg.mediaUrl || null,
-          sender: rootGetters["authUser"],
-          chatroom: rootGetters["activeConversation"],
+          sender: activeUser,
+          chatroom: activeCr,
           removed: false,
           reactors: {},
           reactions: {
@@ -33,15 +36,21 @@ export default {
           time: Date.now()
         };
 
+        let unread = {
+          ...rootGetters["chatrooms/chatroomInfo"](activeCr).members
+        };
+        delete unread[activeUser];
+
         const chatroomUpd = dispatch(
           "updateDbItem",
           {
             collection: "chatrooms",
-            document: rootGetters["activeConversation"],
+            document: activeCr,
             data: {
               lastMsg: msg.content,
               lastMsgTime: msgData.time,
-              msgCount: firebase.firestore.FieldValue.increment(1)
+              msgCount: firebase.firestore.FieldValue.increment(1),
+              unread
             }
           },
           { root: true }
@@ -50,7 +59,7 @@ export default {
         const db = firebase.firestore();
         const addMsg = db
           .collection("chatrooms")
-          .doc(rootGetters["activeConversation"])
+          .doc(activeCr)
           .collection("msgs")
           .add(msgData);
 

@@ -6,5 +6,12 @@ export default {
     } else {
       Vue.set(state, name, value);
     }
+  },
+  setMsgNotice(state, value) {
+    if (value) {
+      Vue.set(state, "unreadMsg", true);
+    } else {
+      Vue.set(state, "unreadMsg", false);
+    }
   }
 };

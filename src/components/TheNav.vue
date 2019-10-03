@@ -8,7 +8,7 @@
     </div>
     <ul class="nav">
       <li class="nav-item">
-        <a class="notice btn btn-outline-primary" href="#">
+        <a :class="[{'notice': unreadMsg },'btn btn-outline-primary']" href="#">
           <font-awesome-icon :icon="['fas', 'comment-dots']" />
         </a>
       </li>
@@ -30,12 +30,16 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import asyncDataStatus from "@/mixins/asyncDataStatus";
 
 export default {
   mixins: [asyncDataStatus],
 
   computed: {
+    ...mapState({
+      unreadMsg: "unreadMsg"
+    }),
     authUser() {
       return this.$store.state.users[this.$store.state.authUserId];
     },

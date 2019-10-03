@@ -69,6 +69,25 @@ export default {
         });
       });
     },
+    viewedChatroom({ dispatch, rootGetters }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "deleteFieldValue",
+          {
+            collection: "chatrooms",
+            document: rootGetters["activeConversation"],
+            fieldValue: [`unread.${rootGetters["authUser"]}`]
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
 
     createConversation({ dispatch, rootState, rootGetters }, { title, email }) {
       return new Promise((resolve, reject) => {

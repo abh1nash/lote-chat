@@ -24,7 +24,6 @@
         :invite="true"
       />
       <ConversationListItem
-        @click="toggleActive(conversation)"
         v-for="conversation in conversationList"
         :crId="conversation"
         :key="conversation"
@@ -54,6 +53,16 @@ export default {
     },
     invitesList() {
       return this.user.invites ? Object.keys(this.user.invites) : [];
+    }
+  },
+
+  watch: {
+    invitesList: function(val) {
+      if (val.length > 0) {
+        this.$store.dispatch("notify", true);
+      } else {
+        this.$store.dispatch("notify");
+      }
     }
   }
 };

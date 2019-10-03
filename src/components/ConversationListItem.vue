@@ -71,6 +71,8 @@ export default {
     },
 
     toggleActive() {
+      if (this.invite) return;
+
       if (this.$store.state.msgsReady) {
         this.$store.dispatch("msgsNotReady");
       }
@@ -83,6 +85,7 @@ export default {
           .dispatch("messages/fetchMessages")
           .then(() => {
             this.$store.dispatch("messages/listenMessages"); //start listener
+            this.$store.dispatch("chatrooms/viewedChatroom"); //remove unread marker
             this.$store.dispatch("msgsReady");
           })
           .catch(err => {
@@ -108,14 +111,22 @@ export default {
     }
   },
   computed: {
-    unread() {
-      return false; //to be coded later
-    },
     active() {
       return this.crId == this.$store.state.activeConversation;
     },
     conversation() {
       return this.$store.state.chatrooms[this.crId];
+    },
+    unread() {
+      let val = Object.keys(this.conversation.unread).includes(
+        this.$store.state.authUserId
+      );
+      if (val) {
+        this.$store.dispatch("notify", true);
+      } else {
+        this.$store.dispatch("notify");
+      }
+      return val;
     },
     lastMsg() {
       return this.conversation.lastMsg;
