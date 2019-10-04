@@ -8,7 +8,7 @@
     </div>
     <ul class="nav">
       <li class="nav-item">
-        <a :class="[{'notice': unreadMsg },'btn btn-outline-primary']" href="#">
+        <a :class="[{'notice': notice },'btn btn-outline-primary']" href="#">
           <font-awesome-icon :icon="['fas', 'comment-dots']" />
         </a>
       </li>
@@ -38,10 +38,15 @@ export default {
 
   computed: {
     ...mapState({
-      unreadMsg: "unreadMsg"
+      unreadMsgs: "unreadMsgs"
     }),
+    notice() {
+      return this.unreadMsgs.length > 0;
+    },
     authUser() {
-      return this.$store.state.users[this.$store.state.authUserId];
+      return this.$store.getters["users/userInfo"](
+        this.$store.getters["authUser"]
+      );
     },
     displayName() {
       return this.authUser.name;

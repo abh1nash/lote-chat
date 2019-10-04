@@ -102,42 +102,36 @@ export default {
           });
       });
     },
-    listenMessages({ commit, rootGetters, state }, removeListener) {
+    listenMessages({ commit, rootGetters, dispatch }) {
       const db = firebase.firestore();
       let crId = rootGetters["activeConversation"];
 
-      let liveUpdCount = 0;
-      const unsubscribe = db
+      const listener = db
         .collection("chatrooms")
         .doc(crId)
         .collection("msgs")
         .orderBy("time")
+        .limit(100)
         .onSnapshot(snapshot => {
-          if (liveUpdCount < 1) {
-            //add everything from the first snapshot
-            let msgs = snapshot.docs.map(doc => doc.data());
-            commit("setMessages", {
-              crId: rootGetters["activeConversation"],
-              msgs
-            });
-          } else {
-            //add new data from second update onwards
-            snapshot.docChanges().forEach(change => {
-              if (change.type == "added") {
-                commit("addMessage", {
-                  crId: rootGetters["activeConversation"],
-                  msg: change.doc.data()
-                });
-              }
-            });
-          }
-
-          liveUpdCount++;
+          //add everything from the first snapshot
+          let msgs = snapshot.docs.map(doc => doc.data());
+          commit("setMessages", {
+            crId,
+            msgs
+          });
         });
 
-      if (removeListener) {
-        unsubscribe();
-      }
+      dispatch(
+        "listeners/addListener",
+        {
+          name: "messages",
+          id: crId,
+          value: listener
+        },
+        {
+          root: true
+        }
+      );
     }
   },
   getters: {

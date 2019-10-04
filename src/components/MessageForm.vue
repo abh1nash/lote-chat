@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     sendMsg() {
+      this.$store.dispatch("chatrooms/viewedChatroom");
       this.$store
         .dispatch("messages/sendMessage", {
           content: this.content,

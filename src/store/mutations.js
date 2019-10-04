@@ -7,11 +7,13 @@ export default {
       Vue.set(state, name, value);
     }
   },
-  setMsgNotice(state, value) {
-    if (value) {
-      Vue.set(state, "unreadMsg", true);
+  setMsgNotice(state, { crId, remove }) {
+    if (remove) {
+      state.unreadMsgs.splice(state.unreadMsgs.indexOf(crId));
     } else {
-      Vue.set(state, "unreadMsg", false);
+      if (!Object.keys(state.unreadMsgs).includes(crId)) {
+        state.unreadMsgs.push(crId);
+      }
     }
   }
 };

@@ -47,7 +47,7 @@ export default {
       this.$store
         .dispatch("users/acceptInvite", {
           crId: this.crId,
-          uid: this.$store.state.authUserId
+          uid: this.$store.getters["authUser"]
         })
         .then(() => {
           console.log("accepted invite");
@@ -60,10 +60,10 @@ export default {
       this.$store
         .dispatch("users/declineInvite", {
           crId: this.crId,
-          uid: this.$store.state.authUserId
+          uid: this.$store.getters["authUser"]
         })
         .then(() => {
-          console.log("invite deleted");
+          this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
         })
         .catch(err => {
           console.log(err);
@@ -73,12 +73,15 @@ export default {
     toggleActive() {
       if (this.invite) return;
 
-      if (this.$store.state.msgsReady) {
+      if (this.$store.getters["msgsReadyStatus"]) {
         this.$store.dispatch("msgsNotReady");
       }
-      if (this.$store.state.activeConversation != this.crId) {
-        if (this.$store.state.activeConversation) {
-          this.$store.dispatch("messages/listenMessages", true); //stop listener
+      if (this.$store.getters["activeConversation"] != this.crId) {
+        if (this.$store.getters["activeConversation"]) {
+          this.$store.dispatch("listeners/stopListening", {
+            name: "messages",
+            id: this.$store.getters["activeConversation"]
+          }); //stop listener
         }
         this.$store.dispatch("updateActiveRoom", this.crId);
         this.$store
@@ -87,6 +90,7 @@ export default {
             this.$store.dispatch("messages/listenMessages"); //start listener
             this.$store.dispatch("chatrooms/viewedChatroom"); //remove unread marker
             this.$store.dispatch("msgsReady");
+            this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
           })
           .catch(err => {
             console.log(err);
@@ -100,7 +104,7 @@ export default {
       this.$store
         .dispatch("chatrooms/deleteChatroom", {
           crId: this.crId,
-          uid: this.$store.state.authUserId
+          uid: this.$store.getters["authUser"]
         })
         .then(() => {
           this.fetched();
@@ -112,21 +116,19 @@ export default {
   },
   computed: {
     active() {
-      return this.crId == this.$store.state.activeConversation;
+      return this.crId == this.$store.getters["activeConversation"];
     },
     conversation() {
-      return this.$store.state.chatrooms[this.crId];
+      return this.$store.getters["chatrooms/chatroomInfo"](this.crId);
     },
     unread() {
-      let val = Object.keys(this.conversation.unread).includes(
-        this.$store.state.authUserId
-      );
-      if (val) {
-        this.$store.dispatch("notify", true);
-      } else {
-        this.$store.dispatch("notify");
-      }
-      return val;
+      let unreadStatus = this.conversation.unread
+        ? Object.keys(this.conversation.unread).includes(
+            this.$store.getters["authUser"]
+          )
+        : false;
+
+      return unreadStatus;
     },
     lastMsg() {
       return this.conversation.lastMsg;
@@ -141,19 +143,21 @@ export default {
       if (this.conversation.type == "single") {
         let otherUser;
         this.members.forEach(member => {
-          if (member != this.$store.state.authUserId) {
+          if (member != this.$store.getters["authUser"]) {
             otherUser = member;
           }
         });
         if (!otherUser) {
           this.invited.forEach(member => {
-            if (member != this.$store.state.authUserId) {
+            if (member != this.$store.getters["authUser"]) {
               otherUser = member;
             }
           });
         }
         // console.log(otherUser);
-        return otherUser ? this.$store.state.users[otherUser].avatar : null;
+        return otherUser
+          ? this.$store.getters["users/userInfo"](otherUser).avatar
+          : null;
       } else if (this.conversation.avatar) {
         return this.conversation.avatar;
       }
@@ -171,6 +175,10 @@ export default {
       .then(({ members, invited }) => {
         this.$store.dispatch("chatrooms/listenChatroom", this.crId);
 
+        if (this.unread || this.invite) {
+          this.$store.dispatch("notify", { crId: this.crId });
+        }
+
         const associatedUsers = [
           ...Object.keys(members),
           ...Object.keys(invited)
@@ -184,7 +192,7 @@ export default {
               this.$store
                 .dispatch("users/fetchUser", user)
                 .then(() => {
-                  if (user != this.$store.state.authUserId) {
+                  if (user != this.$store.getters["authUser"]) {
                     this.$store.dispatch("users/listenUser", user);
                   }
                   resolve();
@@ -204,6 +212,20 @@ export default {
             });
         }
       });
+  },
+  updated() {
+    if (
+      this.$store.getters["chatrooms/chatroomAssociatedUsers"](this.crId) < 2
+    ) {
+      this.deleteChatroom();
+    }
+  },
+
+  destroyed() {
+    this.$store.dispatch("listeners/stopListening", {
+      name: "chatrooms",
+      id: this.crId
+    });
   }
 };
 </script>

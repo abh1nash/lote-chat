@@ -4,5 +4,5 @@ export default {
   activeWindowTitle: null,
   activeWindowTime: 0,
   msgsReady: false,
-  unreadMsg: false
+  unreadMsgs: []
 };

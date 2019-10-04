@@ -24,11 +24,11 @@ export default {
         .dispatch("users/googleLogin")
         .then(() => {
           this.$store
-            .dispatch("users/fetchUser", this.$store.state.authUserId)
+            .dispatch("users/fetchUser", this.$store.getters["authUser"])
             .then(() => {
               this.$store.dispatch(
                 "users/listenUser",
-                this.$store.state.authUserId
+                this.$store.getters["authUser"]
               );
               this.$router.push({ name: "chat" });
             });

@@ -41,11 +41,11 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.users[this.authId];
+      return this.$store.getters["users/userInfo"](this.authId);
     },
 
     authId() {
-      return this.$store.state.authUserId;
+      return this.$store.getters["authUser"];
     },
 
     conversationList() {
@@ -53,16 +53,6 @@ export default {
     },
     invitesList() {
       return this.user.invites ? Object.keys(this.user.invites) : [];
-    }
-  },
-
-  watch: {
-    invitesList: function(val) {
-      if (val.length > 0) {
-        this.$store.dispatch("notify", true);
-      } else {
-        this.$store.dispatch("notify");
-      }
     }
   }
 };

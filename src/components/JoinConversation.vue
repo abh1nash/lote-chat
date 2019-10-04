@@ -29,14 +29,14 @@ export default {
       this.$store
         .dispatch("users/checkMembershipEligibility", {
           crId: this.crId,
-          uid: this.$store.state.authUserId
+          uid: this.$store.getters["authUser"]
         })
         .then(isEligible => {
           if (isEligible) {
             this.$store
               .dispatch("users/acceptInvite", {
                 crId: this.crId,
-                uid: this.$store.state.authUserId
+                uid: this.$store.getters["authUser"]
               })
               .then(() => {
                 this.$emit("eventSuccess");

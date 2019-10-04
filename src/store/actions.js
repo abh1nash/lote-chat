@@ -71,10 +71,11 @@ export default {
     });
   },
 
-  listenDoc({ commit }, { collection, document }) {
+  listenDoc({ commit, dispatch }, { collection, document }) {
     const db = firebase.firestore();
 
-    db.collection(collection)
+    const listener = db
+      .collection(collection)
       .doc(document)
       .onSnapshot(doc => {
         console.log(doc.data());
@@ -84,6 +85,12 @@ export default {
           value: doc.data()
         });
       });
+
+    dispatch("listeners/addListener", {
+      name: collection,
+      id: document,
+      value: listener
+    });
   },
   deleteDoc({}, { collection, document }) {
     return new Promise((resolve, reject) => {
@@ -137,8 +144,8 @@ export default {
   msgsReady({ commit }) {
     commit("setItem", { name: "msgsReady", value: true });
   },
-  notify({ commit }, value) {
-    commit("setMsgNotice", value);
+  notify({ commit }, { crId, remove }) {
+    commit("setMsgNotice", { crId, remove });
   },
   fetchDbItem({}, { collection, document }) {
     return new Promise((resolve, reject) => {

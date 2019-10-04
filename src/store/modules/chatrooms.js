@@ -69,7 +69,7 @@ export default {
         });
       });
     },
-    viewedChatroom({ dispatch, rootGetters }) {
+    viewedChatroom({ commit, dispatch, rootGetters }) {
       return new Promise((resolve, reject) => {
         dispatch(
           "deleteFieldValue",
@@ -81,6 +81,14 @@ export default {
           { root: true }
         )
           .then(() => {
+            dispatch(
+              "notify",
+              {
+                crId: rootGetters["activeConversation"],
+                remove: true
+              },
+              { root: true }
+            );
             resolve();
           })
           .catch(err => {
@@ -124,7 +132,8 @@ export default {
                 },
                 msgCount: 0,
                 lastMsg: null,
-                lastMsgTime: Date.now()
+                lastMsgTime: Date.now(),
+                unread: {}
               };
 
               dispatch(

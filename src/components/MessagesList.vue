@@ -63,7 +63,7 @@ export default {
       msgs: "messages/msgs"
     }),
     displayMsgs() {
-      return this.$store.state.msgsReady;
+      return this.$store.getters["msgReadyStatus"];
     }
   }
 };
