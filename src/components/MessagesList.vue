@@ -1,5 +1,5 @@
 <template>
-  <div class="messages">
+  <div @click="viewedMsg" class="messages">
     <div v-if="!activeConversation" class="overlay">
       <div class="text-info-white">Select a Conversation to begin!</div>
     </div>
@@ -53,6 +53,12 @@ export default {
   components: {
     MessageForm,
     MessagesContainer
+  },
+
+  methods: {
+    viewedMsg() {
+      this.$store.dispatch("chatrooms/viewedChatroom");
+    }
   },
 
   computed: {

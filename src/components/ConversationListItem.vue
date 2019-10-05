@@ -179,15 +179,13 @@ export default {
           this.$store.dispatch("notify", { crId: this.crId });
         }
 
-        const associatedUsers = [
-          ...Object.keys(members),
-          ...Object.keys(invited)
-        ];
-
-        if (associatedUsers.length < 2) {
+        if (
+          this.$store.getters["chatrooms/chatroomAssociatedUsers"](this.crId) <
+          2
+        ) {
           this.deleteChatroom();
         } else {
-          let fetchUsers = associatedUsers.map(user => {
+          let fetchUsers = [...this.members, ...this.invited].map(user => {
             return new Promise((resolve, reject) => {
               this.$store
                 .dispatch("users/fetchUser", user)
@@ -213,7 +211,12 @@ export default {
         }
       });
   },
+
   updated() {
+    if (this.unread || this.invite) {
+      this.$store.dispatch("notify", { crId: this.crId });
+    }
+
     if (
       this.$store.getters["chatrooms/chatroomAssociatedUsers"](this.crId) < 2
     ) {

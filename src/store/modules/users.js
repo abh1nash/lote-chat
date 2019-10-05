@@ -98,14 +98,15 @@ export default {
           { root: true }
         );
 
-        Promise.all([
-          deleteInvite,
-          addChatroomToUser,
-          deleteInviteFromChatroom,
-          addUserToChatroom
-        ])
+        Promise.all([addChatroomToUser, addUserToChatroom])
           .then(() => {
-            resolve();
+            Promise.all([deleteInvite, deleteInviteFromChatroom])
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
           })
           .catch(err => {
             reject(err);
@@ -134,9 +135,7 @@ export default {
         );
         Promise.all([deleteInvite, deleteInviteFromChatroom])
           .then(() => {
-            console.log(rootGetters["chatrooms/chatroomAssociatedUsers"](crId));
             if (rootGetters["chatrooms/chatroomAssociatedUsers"](crId) < 2) {
-              console.log("the chatroom should be deleted here");
               dispatch(
                 "chatrooms/deleteChatroom",
                 { crId, uid: rootGetters["chatrooms/chatroomInitiator"](crId) },

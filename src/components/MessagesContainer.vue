@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="container">
+  <div @mouseover="checkScrollEvent" @mouseout="removeScrollEvent" class="container" ref="container">
     <MessageListItem v-for="(msg, index) in messagesList" :msg="msg" :key="index" />
   </div>
 </template>
@@ -15,6 +15,15 @@ export default {
   methods: {
     updateScroll(el) {
       el.scrollTop = el.scrollHeight;
+    },
+    checkScrollEvent() {
+      this.$refs['container'].addEventListener('scroll', this.viewedMsg)
+    },
+    removeScrollEvent() {
+      this.$refs['container'].removeEventListener('scroll', this.viewedMsg)
+    },
+    viewedMsg() {
+      this.$store.dispatch("chatrooms/viewedChatroom");
     }
   },
   mounted() {

@@ -28,18 +28,23 @@ export default {
   },
   methods: {
     sendMsg() {
+      let msgContent = this.content;
+      this.content = "";
       this.$store.dispatch("chatrooms/viewedChatroom");
-      this.$store
-        .dispatch("messages/sendMessage", {
-          content: this.content,
-          type: this.type
-        })
-        .then(docRef => {
-          this.content = "";
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (msgContent.trim().length > 0) {
+        //avoid sending message if there is no content
+        this.$store
+          .dispatch("messages/sendMessage", {
+            content: msgContent,
+            type: this.type
+          })
+          .then(docRef => {
+            this.content = "";
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   }
 };
