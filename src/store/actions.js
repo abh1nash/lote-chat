@@ -128,11 +128,11 @@ export default {
     if (crId) {
       commit("setItem", {
         name: "activeWindowTitle",
-        value: getters["chatrooms/chatroomInfo"](crId).title
+        value: getters["chatrooms/chatroomTitle"](crId)
       });
       commit("setItem", {
         name: "activeWindowTime",
-        value: getters["chatrooms/chatroomInfo"](crId).lastMsgTime
+        value: getters["chatrooms/chatroomActiveTime"](crId)
       });
     }
   },

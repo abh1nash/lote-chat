@@ -185,6 +185,27 @@ export default {
       Object.keys(state[crId].invited).length,
     chatroomInitiator: state => crId => state[crId].initiator,
     chatroomInfo: state => crId => state[crId],
+    chatroomActiveTime(state, getters, rootState, rootGetters) {
+      return crId => {
+        let activeRoom = getters["chatroomInfo"](crId);
+        if (activeRoom.type == "single") {
+          if (state[crId].members) {
+            let lastActivityTime;
+            Object.keys(state[crId].members).forEach(user => {
+              if (user != rootGetters["authUser"]) {
+                lastActivityTime = rootGetters["users/userInfo"](user)
+                  .lastActivity;
+              }
+            });
+            return lastActivityTime;
+          } else {
+            return null;
+          }
+        } else {
+          return getters["chatroomInfo"](crId).lastMsgTime;
+        }
+      };
+    },
     chatroomTitle(state, getters, rootState, rootGetters) {
       return crId => {
         if (!crId) {

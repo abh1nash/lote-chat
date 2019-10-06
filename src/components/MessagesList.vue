@@ -9,11 +9,12 @@
           <font-awesome-icon :icon="['fas', 'user']" />
         </div>
         <div class="cr-title">
-          <h3>{{activeTitle(activeConversation) || 'No conversation active.'}}</h3>
+          <h3>{{activeTitle || 'No conversation active.'}}</h3>
           <div class="activity">
             <span v-if="activeConversation">
               Active
-              <AppDate :date="activeTime" />
+              <AppDate v-if="activeTime" :date="activeTime" />
+              <span v-else>status available after invitation acceptance.</span>
             </span>
             <span v-else>You can see your conversations here.</span>
           </div>
@@ -65,7 +66,7 @@ export default {
   computed: {
     ...mapGetters({
       activeConversation: "activeConversation",
-      activeTitle: "chatrooms/chatroomTitle",
+      activeTitle: "activeTitle",
       activeTime: "activeTime",
       msgs: "messages/msgs"
     }),
