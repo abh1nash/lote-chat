@@ -119,6 +119,7 @@ export default {
             crId,
             msgs
           });
+          dispatch("updateActiveRoom", crId, { root: true });
         });
 
       dispatch(
