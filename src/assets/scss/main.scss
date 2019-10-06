@@ -442,6 +442,9 @@ header {
             .msg-group {
               background: purple;
               color: #fff;
+              width: 98%;
+              overflow-wrap: break-word;
+              display: inline-block;
 
               .msg-time {
                 text-align: right;

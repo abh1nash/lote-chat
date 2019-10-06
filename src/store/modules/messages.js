@@ -7,7 +7,7 @@ export default {
   state: {},
   mutations: {
     setMessages(state, { crId, msgs }) {
-      Vue.set(state, crId, msgs);
+      Vue.set(state, crId, msgs.reverse());
     },
     addMessage(state, { crId, msg }) {
       state[crId].push(msg);
@@ -86,7 +86,7 @@ export default {
         db.collection("chatrooms")
           .doc(rootGetters["activeConversation"])
           .collection("msgs")
-          .orderBy("time")
+          .orderBy("time", "desc")
           .limit(100)
           .get()
           .then(snapshot => {
@@ -110,7 +110,7 @@ export default {
         .collection("chatrooms")
         .doc(crId)
         .collection("msgs")
-        .orderBy("time")
+        .orderBy("time", "desc")
         .limit(100)
         .onSnapshot(snapshot => {
           //add everything from the first snapshot

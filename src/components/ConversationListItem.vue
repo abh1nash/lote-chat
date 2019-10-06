@@ -50,7 +50,7 @@ export default {
           uid: this.$store.getters["authUser"]
         })
         .then(() => {
-          console.log("accepted invite");
+          this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
         })
         .catch(err => {
           console.log(err);
@@ -215,12 +215,6 @@ export default {
   updated() {
     if (this.unread || this.invite) {
       this.$store.dispatch("notify", { crId: this.crId });
-    }
-
-    if (
-      this.$store.getters["chatrooms/chatroomAssociatedUsers"](this.crId) < 2
-    ) {
-      this.deleteChatroom();
     }
   },
 

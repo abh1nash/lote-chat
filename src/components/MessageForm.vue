@@ -38,9 +38,6 @@ export default {
             content: msgContent,
             type: this.type
           })
-          .then(docRef => {
-            this.content = "";
-          })
           .catch(err => {
             console.log(err);
           });

@@ -57,6 +57,7 @@ export default {
 
   methods: {
     viewedMsg() {
+      if (!this.activeConversation) return;
       this.$store.dispatch("chatrooms/viewedChatroom");
     }
   },

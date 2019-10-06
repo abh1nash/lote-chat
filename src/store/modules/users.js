@@ -135,19 +135,30 @@ export default {
         );
         Promise.all([deleteInvite, deleteInviteFromChatroom])
           .then(() => {
-            if (rootGetters["chatrooms/chatroomAssociatedUsers"](crId) < 2) {
-              dispatch(
-                "chatrooms/deleteChatroom",
-                { crId, uid: rootGetters["chatrooms/chatroomInitiator"](crId) },
-                { root: true }
-              )
-                .then(() => {
-                  resolve();
-                })
-                .catch(err => {
-                  reject(err);
-                });
-            }
+            dispatch("chatrooms/fetchChatroom", crId, { root: true })
+              .then(() => {
+                if (
+                  rootGetters["chatrooms/chatroomAssociatedUsers"](crId) < 2
+                ) {
+                  dispatch(
+                    "chatrooms/deleteChatroom",
+                    {
+                      crId,
+                      uid: rootGetters["chatrooms/chatroomInitiator"](crId)
+                    },
+                    { root: true }
+                  )
+                    .then(() => {
+                      resolve();
+                    })
+                    .catch(err => {
+                      reject(err);
+                    });
+                }
+              })
+              .catch(err => {
+                reject(err);
+              });
           })
           .catch(err => {
             reject(err);
