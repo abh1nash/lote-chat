@@ -22,6 +22,14 @@ export default {
     user() {
       return this.userInfo(this.msg.user);
     }
+  },
+  created() {
+    if (Date.now() - this.msg.lastKeyStroke > 60000) {
+      this.$store.dispatch("chatrooms/typingEnd", {
+        crId: this.activeConversation,
+        uid: this.msg.user
+      });
+    }
   }
 };
 </script>
