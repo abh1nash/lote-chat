@@ -236,6 +236,10 @@ export default {
       name: "chatrooms",
       id: this.crId
     });
+
+    if (this.crId == this.$store.getters["activeConversation"]) {
+      this.$store.dispatch("updateActiveRoom");
+    }
   }
 };
 </script>

@@ -7,7 +7,7 @@
   >
     <MessageListItem v-for="(msg, index) in messagesList" :msg="msg" :key="index" />
 
-    <div class="typing-hint">
+    <div v-if="typingList" class="typing-hint">
       <MessageTyping v-for="item in typingList" :key="item.user" :msg="item" />
     </div>
   </div>
@@ -56,12 +56,14 @@ export default {
     },
 
     typingList() {
-      let usersTyping = this.chatroomInfo(this.activeConversation).typing;
-      if (usersTyping) {
-        return Object.values(usersTyping).filter(
-          value => value.user != this.authUser
-        );
-      } else return [];
+      if (this.activeConversation) {
+        let usersTyping = this.chatroomInfo(this.activeConversation).typing;
+        if (usersTyping) {
+          return Object.values(usersTyping).filter(
+            value => value.user != this.authUser
+          );
+        } else return [];
+      }
     }
   }
 };
