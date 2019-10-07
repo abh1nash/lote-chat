@@ -74,7 +74,7 @@ export default {
   listenDoc({ commit, dispatch }, { collection, document }) {
     const db = firebase.firestore();
 
-    const listener = db
+    const unsubscribe = db
       .collection(collection)
       .doc(document)
       .onSnapshot(doc => {
@@ -89,7 +89,7 @@ export default {
     dispatch("listeners/addListener", {
       name: collection,
       id: document,
-      value: listener
+      value: unsubscribe
     });
   },
   deleteDoc({}, { collection, document }) {

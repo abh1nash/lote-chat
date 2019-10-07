@@ -13,7 +13,8 @@ import {
   faSignInAlt,
   faVideo,
   faHeadphones,
-  faInfo
+  faInfo,
+  faEllipsisH
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -49,7 +50,8 @@ library.add(
   faSignInAlt,
   faPlus,
   faCommentDots,
-  faPaperPlane
+  faPaperPlane,
+  faEllipsisH
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);

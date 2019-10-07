@@ -410,6 +410,42 @@ header {
     }
   }
 
+  .typing-hint {
+    display: flex;
+    flex-direction: row;
+    background: transparent;
+    padding: 5px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+
+    .usr-msg-group {
+      display: flex;
+      flex-direction: row;
+      padding: 5px;
+      max-width: 300px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.1);
+      justify-content: center;
+      align-items: center;
+      margin: 3px;
+
+      .avatar {
+        img {
+          border-radius: 50%;
+          width: 25px;
+          height: 25px;
+        }
+      }
+
+      .msg {
+        // font-weight: 100;
+        margin-left: 3px;
+        font-size: 0.6em;
+      }
+    }
+  }
+
   .chat-view {
     flex: 1;
     display: flex;
@@ -419,12 +455,13 @@ header {
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
+
     .container {
       position: absolute;
       overflow-y: auto;
       height: 100%;
       flex: 1;
-      padding: 50px 20px;
+      padding: 30px 20px;
       display: flex;
       flex-direction: column;
 

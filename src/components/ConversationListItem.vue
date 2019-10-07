@@ -81,13 +81,21 @@ export default {
           this.$store.dispatch("listeners/stopListening", {
             name: "messages",
             id: this.$store.getters["activeConversation"]
-          }); //stop listener
+          });
+          this.$store.dispatch("chatrooms/typingStatusUpd", {
+            crId: this.crId,
+            stop: true
+          });
+          //stop listeners
         }
         this.$store.dispatch("updateActiveRoom", this.crId);
         this.$store
           .dispatch("messages/fetchMessages")
           .then(() => {
-            this.$store.dispatch("messages/listenMessages"); //start listener
+            this.$store.dispatch("messages/listenMessages");
+            this.$store.dispatch("chatrooms/typingStatusUpd", {
+              crId: this.crId
+            }); //start listeners
             this.$store.dispatch("chatrooms/viewedChatroom"); //remove unread marker
             this.$store.dispatch("msgsReady");
             this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
@@ -190,7 +198,12 @@ export default {
               this.$store
                 .dispatch("users/fetchUser", user)
                 .then(() => {
-                  if (user != this.$store.getters["authUser"]) {
+                  if (
+                    user != this.$store.getters["authUser"] &&
+                    !Object.keys(this.$store.state.listeners.users).includes(
+                      user
+                    )
+                  ) {
                     this.$store.dispatch("users/listenUser", user);
                   }
                   resolve();

@@ -106,7 +106,7 @@ export default {
       const db = firebase.firestore();
       let crId = rootGetters["activeConversation"];
 
-      const listener = db
+      const unsubscribe = db
         .collection("chatrooms")
         .doc(crId)
         .collection("msgs")
@@ -127,7 +127,7 @@ export default {
         {
           name: "messages",
           id: crId,
-          value: listener
+          value: unsubscribe
         },
         {
           root: true

@@ -1,26 +1,37 @@
 <template>
-  <div @mouseover="checkScrollEvent" @mouseout="removeScrollEvent" class="container" ref="container">
+  <div
+    @mouseover="checkScrollEvent"
+    @mouseout="removeScrollEvent"
+    class="container"
+    ref="container"
+  >
     <MessageListItem v-for="(msg, index) in messagesList" :msg="msg" :key="index" />
+
+    <div class="typing-hint">
+      <MessageTyping v-for="item in typingList" :key="item.user" :msg="item" />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import MessageListItem from "./MessageListItem";
+import MessageTyping from "./MessageTyping";
 
 export default {
   components: {
-    MessageListItem
+    MessageListItem,
+    MessageTyping
   },
   methods: {
     updateScroll(el) {
       el.scrollTop = el.scrollHeight;
     },
     checkScrollEvent() {
-      this.$refs['container'].addEventListener('scroll', this.viewedMsg)
+      this.$refs["container"].addEventListener("scroll", this.viewedMsg);
     },
     removeScrollEvent() {
-      this.$refs['container'].removeEventListener('scroll', this.viewedMsg)
+      this.$refs["container"].removeEventListener("scroll", this.viewedMsg);
     },
     viewedMsg() {
       this.$store.dispatch("chatrooms/viewedChatroom");
@@ -35,11 +46,22 @@ export default {
   computed: {
     ...mapGetters({
       activeConversation: "activeConversation",
-      msgs: "messages/msgs"
+      msgs: "messages/msgs",
+      chatroomInfo: "chatrooms/chatroomInfo",
+      authUser: "authUser"
     }),
 
     messagesList() {
       return this.msgs(this.activeConversation);
+    },
+
+    typingList() {
+      let usersTyping = this.chatroomInfo(this.activeConversation).typing;
+      if (usersTyping) {
+        return Object.values(usersTyping).filter(
+          value => value.user != this.authUser
+        );
+      } else return [];
     }
   }
 };

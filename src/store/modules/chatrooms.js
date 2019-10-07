@@ -1,7 +1,15 @@
+import Vue from "vue";
+import firebase from "firebase/app";
+import "firebase/database";
+
 export default {
   namespaced: true,
   state: {},
-  mutations: {},
+  mutations: {
+    userTypingUpd(state, { crId, value }) {
+      Vue.set(state[crId], "typing", value);
+    }
+  },
   actions: {
     listenChatroom({ dispatch }, crId) {
       dispatch(
@@ -177,6 +185,29 @@ export default {
           }
         });
       });
+    },
+
+    typingMode({ commit }, { crId, uid, content }) {
+      const rtd = firebase.database();
+      rtd
+        .ref(`${crId}/${uid}`)
+        .set({ content, lastKeyStroke: Date.now(), user: uid });
+    },
+
+    typingEnd({ commit }, { crId, uid }) {
+      const rtd = firebase.database();
+      rtd.ref(`${crId}/${uid}`).remove();
+    },
+
+    typingStatusUpd({ commit }, { crId, stop }) {
+      const rtd = firebase.database().ref(crId);
+      if (stop) {
+        rtd.off();
+      } else {
+        rtd.on("value", snapshot => {
+          commit("userTypingUpd", { crId, value: snapshot.val() });
+        });
+      }
     }
   },
   getters: {
