@@ -10,6 +10,22 @@
     <div v-if="typingList" class="typing-hint">
       <MessageTyping v-for="item in typingList" :key="item.user" :msg="item" />
     </div>
+
+    <div v-if="readUsersList.length>0" class="read-by">
+      <div class="seen-icon">
+        <font-awesome-icon :icon="['fas', 'eye']" />
+      </div>
+      <div class="users">
+        <div
+          v-for="user in readUsersList"
+          :key="user"
+          :title="'Seen by '+userInfo(user).name"
+          class="avatar"
+        >
+          <img :src="userInfo(user).avatar" :alt="userInfo(user).name" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,11 +64,25 @@ export default {
       activeConversation: "activeConversation",
       msgs: "messages/msgs",
       chatroomInfo: "chatrooms/chatroomInfo",
-      authUser: "authUser"
+      authUser: "authUser",
+      userInfo: "users/userInfo"
     }),
 
     messagesList() {
       return this.msgs(this.activeConversation);
+    },
+
+    readUsersList() {
+      const unreadUsers = Object.keys(
+        this.chatroomInfo(this.activeConversation).unread
+      );
+      const readUsers = Object.keys(
+        this.chatroomInfo(this.activeConversation).members
+      ).filter(
+        member => member != this.authUser && !unreadUsers.includes(member)
+      );
+
+      return readUsers;
     },
 
     typingList() {
@@ -63,7 +93,7 @@ export default {
             value => value.user != this.authUser
           );
         } else return [];
-      }
+      } else return null;
     }
   }
 };

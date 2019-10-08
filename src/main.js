@@ -14,7 +14,8 @@ import {
   faVideo,
   faHeadphones,
   faInfo,
-  faEllipsisH
+  faEllipsisH,
+  faEye
 } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -51,7 +52,8 @@ library.add(
   faPlus,
   faCommentDots,
   faPaperPlane,
-  faEllipsisH
+  faEllipsisH,
+  faEye
 );
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
