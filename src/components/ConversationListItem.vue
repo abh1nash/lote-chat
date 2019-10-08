@@ -104,6 +104,14 @@ export default {
             console.log(err);
           });
       } else {
+        this.$store.dispatch("listeners/stopListening", {
+          name: "messages",
+          id: this.$store.getters["activeConversation"]
+        });
+        this.$store.dispatch("chatrooms/typingStatusUpd", {
+          crId: this.crId,
+          stop: true
+        });
         this.$store.dispatch("updateActiveRoom", null);
       }
     },

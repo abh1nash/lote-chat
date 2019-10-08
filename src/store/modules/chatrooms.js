@@ -219,6 +219,7 @@ export default {
     chatroomActiveTime(state, getters, rootState, rootGetters) {
       return crId => {
         let activeRoom = getters["chatroomInfo"](crId);
+        if (!activeRoom) return null;
         if (activeRoom.type == "single") {
           if (state[crId].members) {
             let lastActivityTime;

@@ -124,17 +124,6 @@ export default {
   },
   updateActiveRoom({ commit, getters }, crId) {
     commit("setItem", { name: "activeConversation", value: crId });
-
-    if (crId) {
-      commit("setItem", {
-        name: "activeWindowTitle",
-        value: getters["chatrooms/chatroomTitle"](crId)
-      });
-      commit("setItem", {
-        name: "activeWindowTime",
-        value: getters["chatrooms/chatroomActiveTime"](crId)
-      });
-    }
   },
 
   msgsNotReady({ commit }) {
