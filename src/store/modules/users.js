@@ -63,7 +63,7 @@ export default {
           });
       });
     },
-    acceptInvite({ dispatch }, { crId, uid }) {
+    acceptInvite({ dispatch, rootGetters }, { crId, uid }) {
       return new Promise((resolve, reject) => {
         //delete invite entry from user db
         const deleteInvite = dispatch(
@@ -88,12 +88,18 @@ export default {
           { root: true }
         );
         //add user to chatroom's members
+        let chatroomType =
+          Object.keys(rootGetters["chatrooms/chatroomInfo"](crId).members)
+            .length >= 2
+            ? "group"
+            : "single";
+
         const addUserToChatroom = dispatch(
           "updateDbItem",
           {
             collection: "chatrooms",
             document: crId,
-            data: { [`members.${uid}`]: uid }
+            data: { [`members.${uid}`]: uid, type: chatroomType }
           },
           { root: true }
         );
