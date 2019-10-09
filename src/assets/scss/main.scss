@@ -621,9 +621,18 @@ header {
   background: $white;
   height: 150px;
 
+  .form {
+    position: relative;
+  }
+
   .msg {
     border-radius: 20px;
     height: 60px;
+    &:focus {
+      box-shadow: none;
+      border: 1px solid #ccc;
+      border-right: none;
+    }
   }
 
   #image-upload {
@@ -680,6 +689,22 @@ header {
       border: none;
       background: $primary;
       color: #fff;
+    }
+  }
+  .emoji-btn {
+    border-left: none;
+    background: #fff;
+    color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:hover {
+      color: $gray;
     }
   }
 }

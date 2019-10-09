@@ -10,7 +10,16 @@
           placeholder="What do you wish to say?"
         />
         <div class="input-group-append">
-          <button class="send-btn btn btn-primary" type="submit">
+          <button
+            @click.prevent="displayEmojiSelector=!displayEmojiSelector"
+            title="Insert Emoji"
+            class="emoji-btn btn btn-primary"
+          >
+            <font-awesome-icon :icon="['fas','smile-wink']" />
+          </button>
+        </div>
+        <div class="input-group-append">
+          <button class="send-btn btn btn-primary" title="Send Message" type="submit">
             <font-awesome-icon :icon="['fas','paper-plane']" />
           </button>
         </div>
@@ -23,20 +32,37 @@
         </span>
       </label>
       <input id="image-upload" type="file" @change="uploadImage" />
+      <picker
+        v-if="displayEmojiSelector"
+        :style="{ position: 'absolute', bottom: '115px', right: '0px', height: '250px' }"
+        set="emojione"
+        :emojiSize="18"
+        :native="false"
+        :showSearch="false"
+        :showSkinTone="false"
+        :showPreview="false"
+        :showCategories="false"
+        @select="addEmoji"
+      />
     </form>
   </div>
 </template>
 
 <script>
+import { Picker } from "emoji-mart-vue";
 import { mapGetters } from "vuex";
 export default {
+  components: {
+    Picker
+  },
   data() {
     return {
       content: "",
       type: "text",
       typingTimeout: null,
       filesList: [],
-      mediaUrls: []
+      mediaUrls: [],
+      displayEmojiSelector: false
     };
   },
   computed: {
@@ -46,6 +72,10 @@ export default {
     })
   },
   methods: {
+    addEmoji(e) {
+      this.content += e.native;
+    },
+
     uploadImage(e) {
       Object.values(e.target.files).forEach(file => {
         this.$store
