@@ -44,6 +44,45 @@ export default {
           });
       });
     },
+
+    inviteUser({ dispatch }, { crId, email }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "checkExistence",
+          {
+            collection: "users",
+            data: { field: "email", opStr: "==", value: email }
+          },
+          { root: true }
+        ).then(({ exists, docs }) => {
+          if (exists) {
+            let uid = docs[0].data().uid;
+
+            const addInviteToUser = dispatch("addInviteToUser", { crId, uid });
+            const addInviteToChatroom = dispatch(
+              "updateDbItem",
+              {
+                collection: "chatrooms",
+                document: crId,
+                data: { [`invited.${uid}`]: uid }
+              },
+              { root: true }
+            );
+
+            Promise.all([addInviteToChatroom, addInviteToUser])
+              .then(() => {
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+          } else {
+            reject(new Error("There is no user with given email address."));
+          }
+        });
+      });
+    },
+
     addInviteToUser({ dispatch }, { crId, uid }) {
       return new Promise((resolve, reject) => {
         dispatch(

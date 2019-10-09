@@ -5,6 +5,7 @@
       <CreateConversation v-if="type=='create'" @eventSuccess="$emit('closeModal')" />
       <JoinConversation v-if="type=='join'" @eventSuccess="$emit('closeModal')" />
       <UserSettings v-if="type=='settings'" @eventSuccess="$emit('closeModal')" />
+      <ChatroomInfo v-if="type=='crInfo'" @eventSuccess="$emit('closeModal')" />
     </div>
   </div>
 </template>
@@ -13,6 +14,7 @@
 import CreateConversation from "./CreateConversation";
 import JoinConversation from "./JoinConversation";
 import UserSettings from "./UserSettings";
+import ChatroomInfo from "./ChatroomInfo";
 export default {
   props: {
     type: {
@@ -26,7 +28,8 @@ export default {
   components: {
     CreateConversation,
     JoinConversation,
-    UserSettings
+    UserSettings,
+    ChatroomInfo
   }
 };
 </script>

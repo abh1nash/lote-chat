@@ -214,8 +214,11 @@ export default {
     chatroomAssociatedUsers: state => crId =>
       Object.keys(state[crId].members).length +
       Object.keys(state[crId].invited).length,
+
     chatroomInitiator: state => crId => state[crId].initiator,
+
     chatroomInfo: state => crId => state[crId],
+
     chatroomActiveTime(state, getters, rootState, rootGetters) {
       return crId => {
         let activeRoom = getters["chatroomInfo"](crId);
@@ -238,6 +241,7 @@ export default {
         }
       };
     },
+
     chatroomTitle(state, getters, rootState, rootGetters) {
       return crId => {
         if (!crId) {
@@ -267,6 +271,38 @@ export default {
         } else {
           return "An Untitled Group";
         }
+      };
+    },
+    chatroomAvatar(state, getters, rootState, rootGetters) {
+      return crId => {
+        if (!crId) {
+          return null;
+        }
+        let conversation = getters["chatroomInfo"](crId);
+        let membersList = Object.keys(conversation.members);
+        let invitedList = Object.keys(conversation.invited);
+
+        if (conversation.type == "single") {
+          let otherUser;
+          membersList.forEach(member => {
+            if (member != rootGetters["authUser"]) {
+              otherUser = member;
+            }
+          });
+          if (!otherUser) {
+            invitedList.forEach(member => {
+              if (member != rootGetters["authUser"]) {
+                otherUser = member;
+              }
+            });
+          }
+          // console.log(otherUser);
+          return otherUser
+            ? rootGetters["users/userInfo"](otherUser).avatar
+            : null;
+        } else if (conversation.avatar) {
+          return conversation.avatar;
+        } else return null;
       };
     }
   }

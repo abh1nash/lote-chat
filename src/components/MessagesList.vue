@@ -5,7 +5,12 @@
     </div>
     <header>
       <div class="cr-info">
-        <div class="cr-icon">
+        <img
+          v-if="chatroomAvatar(activeConversation)"
+          :src="chatroomAvatar(activeConversation)"
+          :alt="chatroomTitle(activeConversation)"
+        />
+        <div v-else class="cr-icon">
           <font-awesome-icon :icon="['fas', 'user']" />
         </div>
         <div class="cr-title">
@@ -31,7 +36,7 @@
                 <font-awesome-icon :icon="['fas', 'headphones']" />
               </button>
 
-              <button title="Members" class="btn btn-white">
+              <button title="Info" @click="$emit('showModal', 'crInfo')" class="btn btn-white">
                 <font-awesome-icon :icon="['fas', 'info']" />
               </button>
             </div>
@@ -70,6 +75,7 @@ export default {
     ...mapGetters({
       activeConversation: "activeConversation",
       chatroomTitle: "chatrooms/chatroomTitle",
+      chatroomAvatar: "chatrooms/chatroomAvatar",
       chatroomActiveTime: "chatrooms/chatroomActiveTime",
       msgs: "messages/msgs"
     }),

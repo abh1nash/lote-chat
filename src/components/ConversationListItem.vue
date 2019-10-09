@@ -6,7 +6,10 @@
   >
     <div class="cr-info">
       <div class="convo-icon">
-        <img :src="avatar" :alt="title" />
+        <img v-if="avatar" :src="avatar" :alt="title" />
+        <div v-else class="cr-icon">
+          <font-awesome-icon :icon="['fas', 'user']" />
+        </div>
       </div>
       <div class="convo-info">
         <div class="convo-title">{{title}}</div>
@@ -156,27 +159,7 @@ export default {
       return this.$store.getters["chatrooms/chatroomTitle"](this.crId);
     },
     avatar() {
-      if (this.conversation.type == "single") {
-        let otherUser;
-        this.members.forEach(member => {
-          if (member != this.$store.getters["authUser"]) {
-            otherUser = member;
-          }
-        });
-        if (!otherUser) {
-          this.invited.forEach(member => {
-            if (member != this.$store.getters["authUser"]) {
-              otherUser = member;
-            }
-          });
-        }
-        // console.log(otherUser);
-        return otherUser
-          ? this.$store.getters["users/userInfo"](otherUser).avatar
-          : null;
-      } else if (this.conversation.avatar) {
-        return this.conversation.avatar;
-      }
+      return this.$store.getters["chatrooms/chatroomAvatar"](this.crId);
     },
     members() {
       return Object.keys(this.conversation.members);
