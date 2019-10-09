@@ -4,6 +4,7 @@
       <button @click="$emit('closeModal')" class="close-btn btn btn-outline-danger">&#x2715;</button>
       <CreateConversation v-if="type=='create'" @eventSuccess="$emit('closeModal')" />
       <JoinConversation v-if="type=='join'" @eventSuccess="$emit('closeModal')" />
+      <UserSettings v-if="type=='settings'" @eventSuccess="$emit('closeModal')" />
     </div>
   </div>
 </template>
@@ -11,6 +12,7 @@
 <script>
 import CreateConversation from "./CreateConversation";
 import JoinConversation from "./JoinConversation";
+import UserSettings from "./UserSettings";
 export default {
   props: {
     type: {
@@ -23,7 +25,8 @@ export default {
   },
   components: {
     CreateConversation,
-    JoinConversation
+    JoinConversation,
+    UserSettings
   }
 };
 </script>
@@ -38,7 +41,7 @@ export default {
 
   .modal-container {
     background: #fff;
-    width: 450px;
+    min-width: 450px;
     border-radius: 20px;
     padding: 20px;
     position: relative;

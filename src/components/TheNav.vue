@@ -19,7 +19,7 @@
       </li>
     </ul>
     <div class="gap"></div>
-    <div class="auth-user-info">
+    <div @click="$emit('showModal', 'settings')" class="auth-user-info">
       <div class="auth-user-avatar">
         <img :src="avatar" :alt="displayName" class="avatar" />
       </div>
