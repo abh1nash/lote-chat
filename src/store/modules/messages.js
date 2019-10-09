@@ -22,7 +22,7 @@ export default {
         const msgData = {
           content: msg.content,
           type: msg.type,
-          mediaUrl: msg.mediaUrl || null,
+          mediaUrls: msg.mediaUrls || null,
           sender: activeUser,
           chatroom: activeCr,
           removed: false,

@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
+import "firebase/storage";
+import uuidv1 from "uuid/v1";
 
 export default {
   addItemToDb({ commit }, { collection, document, data }) {
@@ -149,6 +151,49 @@ export default {
         .catch(err => {
           reject(err);
         });
+    });
+  },
+
+  uploadFile(context, { file, fileType }) {
+    return new Promise((resolve, reject) => {
+      const storageRef = firebase.storage().ref();
+
+      if (fileType == file.type.split("/")[0]) {
+        const fileName = uuidv1();
+        const fileExt = file.name.split(".").pop();
+        const fileRef = storageRef.child(`${fileType}/${fileName}.${fileExt}`);
+
+        fileRef.put(file).then(() => {
+          fileRef
+            .getDownloadURL()
+            .then(url => {
+              resolve({ url, filename: file.name });
+            })
+            .catch(err => {
+              switch (err.code) {
+                case "storage/object-not-found":
+                  reject(new Error("File not found on server."));
+                  break;
+
+                case "storage/unauthorized":
+                  reject(
+                    new Error("You don't have permission to view the file.")
+                  );
+                  break;
+
+                case "storage/canceled":
+                  reject(new Error("Upload cancelled."));
+                  break;
+
+                default:
+                  reject(new Error("Error occurred during the file upload."));
+                  break;
+              }
+            });
+        });
+      } else {
+        reject(new Error("Invalid file type."));
+      }
     });
   }
 };

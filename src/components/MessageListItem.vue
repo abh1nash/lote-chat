@@ -5,6 +5,11 @@
         <img :src="avatar" :alt="name" />
       </div>
       <div class="msg-group">
+        <div v-if="!!msg.mediaUrls && msg.mediaUrls.length > 0" class="msg-media">
+          <a v-for="url in msg.mediaUrls" :key="url" :href="url" target="_blank">
+            <img :src="url" alt="Image" />
+          </a>
+        </div>
         <div class="msg">{{msg.content}}</div>
         <div class="msg-time">
           <AppDate :date="msg.time" />

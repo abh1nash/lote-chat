@@ -326,6 +326,31 @@ export default {
             reject(err);
           });
       });
+    },
+
+    updateUser({ dispatch, rootState }, { name, phone, avatar }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "updateDbItem",
+          {
+            collection: "users",
+            document: rootState.authUserId,
+            data: {
+              name,
+              phone,
+              avatar,
+              lastActivity: Date.now()
+            }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
     }
   },
   getters: {
