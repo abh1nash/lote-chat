@@ -2,7 +2,8 @@
   <div>
     <div class="d-flex">
       <TheNav class="col-2 col-xl-1" @showModal="displayModal" />
-      <ConversationList class="col-4" @showModal="displayModal" />
+      <ConversationList v-if="activeList=='conversation'" class="col-4" @showModal="displayModal" />
+      <PeopleList v-else-if="activeList=='people'" class="col-4" @showModal="displayModal" />
       <MessagesList class="col-6 col-xl-7" @showModal="displayModal" />
     </div>
     <ModalOverlay v-if="renderModal" :type="modalFor" :crId="chatroomId" @closeModal="closeModal" />
@@ -12,8 +13,10 @@
 <script>
 import TheNav from "@/components/TheNav";
 import ConversationList from "@/components/ConversationList";
+import PeopleList from "@/components/PeopleList";
 import MessagesList from "@/components/MessagesList";
 import ModalOverlay from "@/components/ModalOverlay";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -25,6 +28,7 @@ export default {
   components: {
     TheNav,
     ConversationList,
+    PeopleList,
     MessagesList,
     ModalOverlay
   },
@@ -39,6 +43,11 @@ export default {
       this.chatroomId = null;
       this.modalFor = null;
     }
+  },
+  computed: {
+    ...mapState({
+      activeList: "activeChatroomList"
+    })
   }
 };
 </script>

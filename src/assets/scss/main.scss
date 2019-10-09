@@ -9,6 +9,11 @@ $white: linear-gradient(to bottom, #fff, #eee);
 $gray: rgba(100, 100, 100, 1);
 $red: #f25;
 
+.btn {
+  &:focus {
+    box-shadow: none;
+  }
+}
 .btn-primary {
   background: $primary;
   border: none;

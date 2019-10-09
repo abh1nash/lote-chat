@@ -8,14 +8,22 @@
     </div>
     <ul class="nav">
       <li class="nav-item">
-        <a :class="[{'notice': notice },'btn btn-outline-primary']" href="#">
+        <button
+          @click.prevent="navSwitch('conversation')"
+          :class="[{'notice': notice },'btn ', {'active':activeChatroomList=='conversation'}]"
+          href="#"
+        >
           <font-awesome-icon :icon="['fas', 'comment-dots']" />
-        </a>
+        </button>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-primary" href="#">
+        <button
+          @click.prevent="navSwitch('people')"
+          :class="['btn ', {'active':activeChatroomList=='people'}]"
+          href="#"
+        >
           <font-awesome-icon class="gradient-btn" :icon="['fas', 'user']" />
-        </a>
+        </button>
       </li>
     </ul>
     <div class="gap"></div>
@@ -36,9 +44,16 @@ import asyncDataStatus from "@/mixins/asyncDataStatus";
 export default {
   mixins: [asyncDataStatus],
 
+  methods: {
+    navSwitch(to) {
+      this.$store.dispatch("navSwitch", to);
+    }
+  },
+
   computed: {
     ...mapState({
-      unreadMsgs: "unreadMsgs"
+      unreadMsgs: "unreadMsgs",
+      activeChatroomList: "activeChatroomList"
     }),
     notice() {
       return this.unreadMsgs.length > 0;

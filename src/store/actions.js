@@ -4,6 +4,9 @@ import "firebase/storage";
 import uuidv1 from "uuid/v1";
 
 export default {
+  navSwitch({ commit }, value) {
+    commit("setItem", { name: "activeChatroomList", value });
+  },
   addItemToDb({ commit }, { collection, document, data }) {
     return new Promise((resolve, reject) => {
       const db = firebase.firestore();

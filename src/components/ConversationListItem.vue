@@ -13,8 +13,15 @@
       </div>
       <div class="convo-info">
         <div class="convo-title">{{title}}</div>
-        <div v-if="lastMsg && !invite" class="convo-last-msg">{{lastMsg}}</div>
-        <div v-else-if="!lastMsg && !invite" class="convo-last-msg null">No messages yet.</div>
+        <div v-if="lastMsg && !invite && !peopleList" class="convo-last-msg">{{lastMsg}}</div>
+        <div
+          v-else-if="!lastMsg && !invite && !peopleList"
+          class="convo-last-msg null"
+        >No messages yet.</div>
+        <div v-else-if="peopleList" class="convo-last-msg null">
+          <span class="mr-1">Active</span>
+          <AppDate :date="lastMsgTime" />
+        </div>
         <div v-else class="convo-invite">
           <div class="invitation">Invitation for Conversation</div>
           <div class="actions">
@@ -24,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div class="extras">
+    <div v-if="!peopleList" class="extras">
       <div class="gap"></div>
       <div class="time">
         <AppDate :date="lastMsgTime" />
@@ -42,6 +49,9 @@ export default {
       required: true
     },
     invite: {
+      type: Boolean
+    },
+    peopleList: {
       type: Boolean
     }
   },
@@ -171,7 +181,9 @@ export default {
   created() {
     this.$store
       .dispatch("chatrooms/fetchChatroom", this.crId)
-      .then(({ members, invited }) => {
+      .then(({ members, invited, type }) => {
+        if (this.peopleList && type == "group") return;
+
         this.$store.dispatch("chatrooms/listenChatroom", this.crId);
 
         if (this.unread || this.invite) {
