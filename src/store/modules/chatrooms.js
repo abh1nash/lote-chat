@@ -11,6 +11,28 @@ export default {
     }
   },
   actions: {
+    updateChatroom({ dispatch }, { crId, title, avatar }) {
+      return new Promise((resolve, reject) => {
+        dispatch(
+          "updateDbItem",
+          {
+            collection: "chatrooms",
+            document: crId,
+            data: { title, avatar }
+          },
+          { root: true }
+        )
+          .then(() => {
+            resolve();
+          })
+          .catch(
+            err => {
+              reject(err);
+            },
+            { root: true }
+          );
+      });
+    },
     listenChatroom({ dispatch }, crId) {
       dispatch(
         "listenDoc",

@@ -10,6 +10,7 @@ $gray: rgba(100, 100, 100, 1);
 $red: #f25;
 
 .btn {
+  border-radius: 20px;
   &:focus {
     box-shadow: none;
   }
@@ -20,7 +21,8 @@ $red: #f25;
   border-radius: 20px;
 }
 
-.btn-warning {
+.btn-warning,
+.btn-danger {
   background: $red;
 }
 
@@ -683,6 +685,43 @@ header {
 }
 
 .chatroom-info {
+  .cr-title {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    .avatar {
+      img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .cr-icon {
+        height: 100px;
+        width: 100px;
+        font-size: 2em;
+        color: $gray;
+        background: #eaeaea;
+        border-radius: 50%;
+        text-align: center;
+        padding-top: 20px;
+      }
+    }
+
+    .title {
+      .file-input,
+      .btn,
+      .form-control {
+        font-size: 0.7em;
+        border-radius: 20px;
+      }
+      #cr-new-avatar-img {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+    }
+  }
   .invitation {
     margin: 20px 0;
     .form-control {
