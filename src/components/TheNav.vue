@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import asyncDataStatus from "@/mixins/asyncDataStatus";
 
 export default {
@@ -55,19 +55,23 @@ export default {
       unreadMsgs: "unreadMsgs",
       activeChatroomList: "activeChatroomList"
     }),
+
+    ...mapGetters({
+      userInfo: "users/userInfo",
+      authUser: "authUser"
+    }),
+
     notice() {
       return this.unreadMsgs.length > 0;
     },
-    authUser() {
-      return this.$store.getters["users/userInfo"](
-        this.$store.getters["authUser"]
-      );
+    user() {
+      return this.userInfo(this.authUser);
     },
     displayName() {
-      return this.authUser.name;
+      return this.user.name;
     },
     avatar() {
-      return this.authUser.avatar;
+      return this.user.avatar;
     }
   }
 };

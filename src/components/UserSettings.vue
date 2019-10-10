@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -59,9 +59,12 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      uploadFile: "uploadFile",
+      updateUser: "users/updateUser"
+    }),
     uploadImage(e) {
-      this.$store
-        .dispatch("uploadFile", { file: e.target.files[0], fileType: "image" })
+      this.uploadFile({ file: e.target.files[0], fileType: "image" })
         .then(({ url, filename }) => {
           this.avatar = url;
         })
@@ -71,12 +74,11 @@ export default {
     },
 
     saveSettings() {
-      this.$store
-        .dispatch("users/updateUser", {
-          name: this.username,
-          phone: this.phone,
-          avatar: this.avatar
-        })
+      this.updateUser({
+        name: this.username,
+        phone: this.phone,
+        avatar: this.avatar
+      })
         .then(() => {
           this.$emit("eventSuccess");
         })

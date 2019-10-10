@@ -83,11 +83,9 @@ export default {
       chatroomTitle: "chatrooms/chatroomTitle",
       chatroomAvatar: "chatrooms/chatroomAvatar",
       chatroomActiveTime: "chatrooms/chatroomActiveTime",
-      msgs: "messages/msgs"
-    }),
-    displayMsgs() {
-      return this.$store.getters["msgReadyStatus"];
-    }
+      msgs: "messages/msgs",
+      displayMsgs: "msgReadyStatus"
+    })
   }
 };
 </script>

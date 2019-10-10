@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -105,24 +105,26 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      sendInvitation: "users/inviteUser",
+      updateChatroom: "chatrooms/updateChatroom",
+      uploadFile: "uploadFile"
+    }),
     inviteUser() {
-      this.$store
-        .dispatch("users/inviteUser", {
-          crId: this.activeConversation,
-          email: this.inviteUserEmail
-        })
-        .catch(err => {
-          this.error = err.message;
-        });
+      this.sendInvitation({
+        crId: this.activeConversation,
+        email: this.inviteUserEmail
+      }).catch(err => {
+        this.error = err.message;
+      });
     },
 
     save() {
-      this.$store
-        .dispatch("chatrooms/updateChatroom", {
-          crId: this.activeConversation,
-          title: this.changedTitle,
-          avatar: this.avatar
-        })
+      this.updateChatroom({
+        crId: this.activeConversation,
+        title: this.changedTitle,
+        avatar: this.avatar
+      })
         .then(() => {
           this.$emit("eventSuccess");
         })
@@ -132,8 +134,7 @@ export default {
     },
 
     uploadImage(e) {
-      this.$store
-        .dispatch("uploadFile", { file: e.target.files[0], fileType: "image" })
+      this.uploadFile({ file: e.target.files[0], fileType: "image" })
         .then(({ url, filename }) => {
           this.avatar = url;
         })

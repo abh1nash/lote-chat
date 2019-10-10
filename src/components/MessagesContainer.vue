@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import MessageListItem from "./MessageListItem";
 import MessageTyping from "./MessageTyping";
 
@@ -40,6 +40,9 @@ export default {
     MessageTyping
   },
   methods: {
+    ...mapActions({
+      viewedMsg: "chatrooms/viewedChatroom"
+    }),
     updateScroll(el) {
       el.scrollTop = el.scrollHeight;
     },
@@ -48,9 +51,6 @@ export default {
     },
     removeScrollEvent() {
       this.$refs["container"].removeEventListener("scroll", this.viewedMsg);
-    },
-    viewedMsg() {
-      this.$store.dispatch("chatrooms/viewedChatroom");
     }
   },
   mounted() {

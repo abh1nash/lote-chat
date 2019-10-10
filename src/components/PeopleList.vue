@@ -15,6 +15,7 @@
 </template>
 <script>
 import ConversationListItem from "./ConversationListItem";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -22,12 +23,12 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      userInfo: "users/userInfo",
+      authId: "authUser"
+    }),
     user() {
-      return this.$store.getters["users/userInfo"](this.authId);
-    },
-
-    authId() {
-      return this.$store.getters["authUser"];
+      return this.userInfo(this.authId);
     },
 
     conversationList() {

@@ -18,27 +18,33 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
       error: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      authUser: "authUser"
+    })
+  },
   methods: {
+    ...mapActions({
+      listenUser: "users/listenUser",
+      fetchUser: "users/fetchUser"
+    }),
+
     googleLogin() {
       this.error = "";
       this.$store
         .dispatch("users/googleLogin")
         .then(() => {
-          this.$store
-            .dispatch("users/fetchUser", this.$store.getters["authUser"])
-            .then(() => {
-              this.$store.dispatch(
-                "users/listenUser",
-                this.$store.getters["authUser"]
-              );
-              this.$router.push({ name: "chat" });
-            });
+          this.fetchUser(this.authUser).then(() => {
+            this.listenUser(this.authUser);
+            this.$router.push({ name: "chat" });
+          });
         })
         .catch(err => {
           this.error = err.message;

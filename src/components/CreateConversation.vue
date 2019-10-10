@@ -1,7 +1,7 @@
 <template>
   <div class="create-conversation">
     <h6>Create a new conversation</h6>
-    <form @submit.prevent="createConversation">
+    <form @submit.prevent="submit">
       <input
         class="modal-input form-control"
         type="text"
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -34,12 +35,14 @@ export default {
     };
   },
   methods: {
-    createConversation() {
-      this.$store
-        .dispatch("chatrooms/createConversation", {
-          title: this.title,
-          email: this.email
-        })
+    ...mapActions({
+      createConversation: "chatrooms/createConversation"
+    }),
+    submit() {
+      this.createConversation({
+        title: this.title,
+        email: this.email
+      })
         .then(crId => {
           this.$emit("eventSuccess");
         })

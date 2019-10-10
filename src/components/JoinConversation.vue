@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -27,30 +28,36 @@ export default {
       error: ""
     };
   },
+  computed: {
+    ...mapGetters({
+      authUser: "authUser"
+    })
+  },
   methods: {
+    ...mapActions({
+      checkMembershipEligibility: "users/checkMembershipEligibility",
+      acceptInvite: "users/acceptInvite"
+    }),
     joinChatroom() {
-      this.$store
-        .dispatch("users/checkMembershipEligibility", {
-          crId: this.crId,
-          uid: this.$store.getters["authUser"]
-        })
-        .then(isEligible => {
-          if (isEligible) {
-            this.$store
-              .dispatch("users/acceptInvite", {
-                crId: this.crId,
-                uid: this.$store.getters["authUser"]
-              })
-              .then(() => {
-                this.$emit("eventSuccess");
-              })
-              .catch(err => {
-                this.error = err.message;
-              });
-          } else {
-            this.error = "Not eligible to join that room.";
-          }
-        });
+      this.checkMembershipEligibility({
+        crId: this.crId,
+        uid: this.authUser
+      }).then(isEligible => {
+        if (isEligible) {
+          this.acceptInvite({
+            crId: this.crId,
+            uid: this.authUser
+          })
+            .then(() => {
+              this.$emit("eventSuccess");
+            })
+            .catch(err => {
+              this.error = err.message;
+            });
+        } else {
+          this.error = "Not eligible to join that room.";
+        }
+      });
     }
   }
 };

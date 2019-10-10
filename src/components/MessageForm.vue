@@ -58,7 +58,7 @@ import "emoji-mart-vue-fast/css/emoji-mart.css";
 import data from "emoji-mart-vue-fast/data/emojione.json";
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     Picker
@@ -85,19 +85,27 @@ export default {
     })
   },
   methods: {
+    ...mapActions({
+      uploadFile: "uploadFile",
+      viewedChatroom: "chatrooms/viewedChatroom",
+      typingMode: "chatrooms/typingMode",
+      typingEnd: "chatrooms/typingEnd",
+      sendMessage: "messages/sendMessage"
+    }),
+
     addEmoji(e) {
       this.content += e.native;
     },
 
     uploadImage(e) {
       Object.values(e.target.files).forEach(file => {
-        this.$store
-          .dispatch("uploadFile", { file, fileType: "image" })
-          .then(({ url, filename }) => {
+        this.uploadFile({ file, fileType: "image" }).then(
+          ({ url, filename }) => {
             this.mediaUrls.push(url);
             this.filesList.push(filename);
             this.type = "image";
-          });
+          }
+        );
       });
     },
 
@@ -113,7 +121,7 @@ export default {
           this.authUser
         )
       ) {
-        this.$store.dispatch("chatrooms/viewedChatroom");
+        this.viewedChatroom();
       }
       if (this.typingTimeout) {
         clearTimeout(this.typingTimeout);
@@ -121,7 +129,7 @@ export default {
       } else {
         this.typingTimeout = setTimeout(this.typingStop, 20000);
       }
-      this.$store.dispatch("chatrooms/typingMode", {
+      this.typingMode({
         crId: this.activeConversation,
         uid: this.authUser,
         content: this.content
@@ -132,7 +140,7 @@ export default {
         clearTimeout(this.typingTimeout);
         this.typingTimeout = null;
       }
-      this.$store.dispatch("chatrooms/typingEnd", {
+      this.typingEnd({
         crId: this.activeConversation,
         uid: this.authUser
       });
@@ -140,16 +148,16 @@ export default {
     sendMsg() {
       let msgContent = this.content;
       this.content = "";
-      this.$store.dispatch("chatrooms/viewedChatroom");
+      this.displayEmojiSelector = false;
+      this.viewedChatroom();
       if (msgContent.trim().length > 0) {
         //avoid sending message if there is no content
         this.typingStop();
-        this.$store
-          .dispatch("messages/sendMessage", {
-            content: msgContent,
-            type: this.type,
-            mediaUrls: this.mediaUrls
-          })
+        this.sendMessage({
+          content: msgContent,
+          type: this.type,
+          mediaUrls: this.mediaUrls
+        })
           .then(() => {
             this.filesList = [];
             this.mediaUrls = [];

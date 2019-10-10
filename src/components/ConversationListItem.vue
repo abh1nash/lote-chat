@@ -42,6 +42,7 @@
 
 <script>
 import asyncDataStatus from "@/mixins/asyncDataStatus";
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   mixins: [asyncDataStatus],
   props: {
@@ -55,106 +56,26 @@ export default {
       type: Boolean
     }
   },
-  methods: {
-    acceptInvite() {
-      this.$store
-        .dispatch("users/acceptInvite", {
-          crId: this.crId,
-          uid: this.$store.getters["authUser"]
-        })
-        .then(() => {
-          this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    declineInvite() {
-      this.$store
-        .dispatch("users/declineInvite", {
-          crId: this.crId,
-          uid: this.$store.getters["authUser"]
-        })
-        .then(() => {
-          this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-
-    toggleActive() {
-      if (this.invite) return;
-
-      if (this.$store.getters["msgsReadyStatus"]) {
-        this.$store.dispatch("msgsNotReady");
-      }
-      if (this.$store.getters["activeConversation"] != this.crId) {
-        if (this.$store.getters["activeConversation"]) {
-          this.$store.dispatch("listeners/stopListening", {
-            name: "messages",
-            id: this.$store.getters["activeConversation"]
-          });
-          this.$store.dispatch("chatrooms/typingStatusUpd", {
-            crId: this.crId,
-            stop: true
-          });
-          //stop listeners
-        }
-        this.$store.dispatch("updateActiveRoom", this.crId);
-        this.$store
-          .dispatch("messages/fetchMessages")
-          .then(() => {
-            this.$store.dispatch("messages/listenMessages");
-            this.$store.dispatch("chatrooms/typingStatusUpd", {
-              crId: this.crId
-            }); //start listeners
-            this.$store.dispatch("chatrooms/viewedChatroom"); //remove unread marker
-            this.$store.dispatch("msgsReady");
-            this.$store.dispatch("notify", { crId: this.crId, remove: true }); //remove notification
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      } else {
-        this.$store.dispatch("listeners/stopListening", {
-          name: "messages",
-          id: this.$store.getters["activeConversation"]
-        });
-        this.$store.dispatch("chatrooms/typingStatusUpd", {
-          crId: this.crId,
-          stop: true
-        });
-        this.$store.dispatch("updateActiveRoom", null);
-      }
-    },
-
-    deleteChatroom() {
-      this.$store
-        .dispatch("chatrooms/deleteChatroom", {
-          crId: this.crId,
-          uid: this.$store.getters["authUser"]
-        })
-        .then(() => {
-          this.fetched();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  },
   computed: {
+    ...mapGetters({
+      activeConversation: "activeConversation",
+      chatroomInfo: "chatrooms/chatroomInfo",
+      chatroomTitle: "chatrooms/chatroomTitle",
+      chatroomAvatar: "chatrooms/chatroomAvatar",
+      chatroomAssociatedUsers: "chatrooms/chatroomAssociatedUsers",
+      authUser: "authUser"
+    }),
+
+    ...mapState({ msgsReadyStatus: "msgsReadyStatus" }),
     active() {
-      return this.crId == this.$store.getters["activeConversation"];
+      return this.crId == this.activeConversation;
     },
     conversation() {
-      return this.$store.getters["chatrooms/chatroomInfo"](this.crId);
+      return this.chatroomInfo(this.crId);
     },
     unread() {
       let unreadStatus = this.conversation.unread
-        ? Object.keys(this.conversation.unread).includes(
-            this.$store.getters["authUser"]
-          )
+        ? Object.keys(this.conversation.unread).includes(this.authUser)
         : false;
 
       return unreadStatus;
@@ -166,10 +87,10 @@ export default {
       return this.conversation.lastMsgTime;
     },
     title() {
-      return this.$store.getters["chatrooms/chatroomTitle"](this.crId);
+      return this.chatroomTitle(this.crId);
     },
     avatar() {
-      return this.$store.getters["chatrooms/chatroomAvatar"](this.crId);
+      return this.chatroomAvatar(this.crId);
     },
     members() {
       return Object.keys(this.conversation.members);
@@ -178,70 +99,164 @@ export default {
       return Object.keys(this.conversation.invited);
     }
   },
-  created() {
-    this.$store
-      .dispatch("chatrooms/fetchChatroom", this.crId)
-      .then(({ members, invited, type }) => {
-        if (this.peopleList && type == "group") return;
+  methods: {
+    ...mapActions({
+      acceptInviteRequest: "users/acceptInvite",
+      declineInviteRequest: "users/declineInvite",
+      notify: "notify",
+      msgsReady: "msgsReady",
+      msgsNotReady: "msgsNotReady",
+      stopListening: "listeners/stopListening",
+      listenMessages: "messages/listenMessages",
+      typingStatusUpd: "chatrooms/typingStatusUpd",
+      viewedChatroom: "chatrooms/viewedChatroom",
+      listenChatroom: "chatrooms/listenChatroom",
+      fetchChatroom: "chatrooms/fetchChatroom",
+      listenUser: "users/listenUser",
+      fetchUser: "users/fetchUser",
+      updateActiveRoom: "updateActiveRoom",
+      fetchMessages: "messages/fetchMessages",
+      deleteChatroomRequest: "chatrooms/deleteChatroom"
+    }),
+    acceptInvite() {
+      this.acceptInviteRequest({
+        crId: this.crId,
+        uid: this.authUser
+      })
+        .then(() => {
+          this.notify({ crId: this.crId, remove: true }); //remove notification
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    declineInvite() {
+      this.declineInviteRequest({
+        crId: this.crId,
+        uid: this.authUser
+      })
+        .then(() => {
+          this.notify({ crId: this.crId, remove: true }); //remove notification
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
-        this.$store.dispatch("chatrooms/listenChatroom", this.crId);
+    toggleActive() {
+      if (this.invite) return;
 
-        if (this.unread || this.invite) {
-          this.$store.dispatch("notify", { crId: this.crId });
-        }
-
-        if (
-          this.$store.getters["chatrooms/chatroomAssociatedUsers"](this.crId) <
-          2
-        ) {
-          this.deleteChatroom();
-        } else {
-          let fetchUsers = [...this.members, ...this.invited].map(user => {
-            return new Promise((resolve, reject) => {
-              this.$store
-                .dispatch("users/fetchUser", user)
-                .then(() => {
-                  if (
-                    user != this.$store.getters["authUser"] &&
-                    !Object.keys(this.$store.state.listeners.users).includes(
-                      user
-                    )
-                  ) {
-                    this.$store.dispatch("users/listenUser", user);
-                  }
-                  resolve();
-                })
-                .catch(err => {
-                  reject(err);
-                });
-            });
+      if (this.msgsReadyStatus) {
+        this.msgsNotReady();
+      }
+      if (this.activeConversation != this.crId) {
+        if (this.activeConversation) {
+          this.stopListening({
+            name: "messages",
+            id: this.activeConversation
           });
 
-          Promise.all(fetchUsers)
-            .then(() => {
-              this.fetched();
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          this.typingStatusUpd({
+            crId: this.crId,
+            stop: true
+          });
+          //stop listeners
         }
-      });
+        this.updateActiveRoom(this.crId);
+        this.fetchMessages()
+          .then(() => {
+            this.listenMessages();
+            this.typingStatusUpd({ crId: this.crId }); //start listeners
+            this.viewedChatroom(); //remove unread marker
+            this.msgsReady();
+            this.notify({ crId: this.crId, remove: true }); //remove notification
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.stopListening({
+          name: "messages",
+          id: this.activeConversation
+        });
+        this.typingStatusUpd({
+          crId: this.crId,
+          stop: true
+        });
+        this.updateActiveRoom(null);
+      }
+    },
+
+    deleteChatroom() {
+      this.deleteChatroomRequest({
+        crId: this.crId,
+        uid: this.authUser
+      })
+        .then(() => {
+          this.fetched();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+
+  created() {
+    this.fetchChatroom(this.crId).then(({ members, invited, type }) => {
+      if (this.peopleList && type == "group") return;
+
+      this.listenChatroom(this.crId);
+
+      if (this.unread || this.invite) {
+        this.notify({ crId: this.crId });
+      }
+
+      if (this.chatroomAssociatedUsers(this.crId) < 2) {
+        this.deleteChatroom();
+      } else {
+        let fetchUsers = [...this.members, ...this.invited].map(user => {
+          return new Promise((resolve, reject) => {
+            this.fetchUser(user)
+              .then(() => {
+                if (
+                  user != this.authUser &&
+                  !Object.keys(this.$store.state.listeners.users).includes(user)
+                ) {
+                  this.listenUser(user);
+                }
+                resolve();
+              })
+              .catch(err => {
+                reject(err);
+              });
+          });
+        });
+
+        Promise.all(fetchUsers)
+          .then(() => {
+            this.fetched();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    });
   },
 
   updated() {
     if (this.unread || this.invite) {
-      this.$store.dispatch("notify", { crId: this.crId });
+      this.notify({ crId: this.crId });
     }
   },
 
   destroyed() {
-    this.$store.dispatch("listeners/stopListening", {
+    this.stopListening({
       name: "chatrooms",
       id: this.crId
     });
 
-    if (this.crId == this.$store.getters["activeConversation"]) {
-      this.$store.dispatch("updateActiveRoom");
+    if (this.crId == this.activeConversation) {
+      this.updateActiveRoom(null);
     }
   }
 };

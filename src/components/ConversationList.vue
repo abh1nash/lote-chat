@@ -32,6 +32,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from "vuex";
 import ConversationListItem from "./ConversationListItem";
 
 export default {
@@ -40,12 +41,13 @@ export default {
   },
 
   computed: {
-    user() {
-      return this.$store.getters["users/userInfo"](this.authId);
-    },
+    ...mapGetters({
+      userInfo: "users/userInfo",
+      authId: "authUser"
+    }),
 
-    authId() {
-      return this.$store.getters["authUser"];
+    user() {
+      return this.userInfo(this.authId);
     },
 
     conversationList() {
