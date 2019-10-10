@@ -4,8 +4,7 @@
       <div class="input-group">
         <input
           class="msg form-control"
-          v-model="content"
-          @keyup="typing"
+          @input="content=$event.target.value"
           type="text"
           placeholder="What do you wish to say?"
         />
@@ -78,7 +77,8 @@ export default {
   computed: {
     ...mapGetters({
       activeConversation: "activeConversation",
-      authUser: "authUser"
+      authUser: "authUser",
+      chatroomInfo: "chatrooms/chatroomInfo"
     })
   },
   methods: {
@@ -105,6 +105,13 @@ export default {
     },
 
     typing() {
+      if (
+        Object.keys(this.chatroomInfo(this.activeConversation).unread).includes(
+          this.authUser
+        )
+      ) {
+        this.$store.dispatch("chatrooms/viewedChatroom");
+      }
       if (this.typingTimeout) {
         clearTimeout(this.typingTimeout);
         this.typingTimeout = setTimeout(this.typingStop, 20000);
@@ -149,6 +156,11 @@ export default {
             console.log(err);
           });
       }
+    }
+  },
+  watch: {
+    content: function() {
+      this.typing();
     }
   }
 };
