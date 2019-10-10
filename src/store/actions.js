@@ -83,7 +83,6 @@ export default {
       .collection(collection)
       .doc(document)
       .onSnapshot(doc => {
-        console.log(doc.data());
         commit("setItem", {
           parent: collection,
           name: document,

@@ -19,7 +19,6 @@ export default {
     },
     stopListening({ state }, { name, id }) {
       state[name][id]();
-      console.log("stopped ", name, id);
     }
   }
 };

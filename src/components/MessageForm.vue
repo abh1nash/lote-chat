@@ -34,10 +34,11 @@
       <input id="image-upload" type="file" @change="uploadImage" />
       <picker
         v-if="displayEmojiSelector"
+        :data="emojiIndex"
         :style="{ position: 'absolute', bottom: '115px', right: '0px', height: '250px' }"
         set="emojione"
         :emojiSize="18"
-        :native="false"
+        :native="true"
         :showSearch="false"
         :showSkinTone="false"
         :showPreview="false"
@@ -49,7 +50,11 @@
 </template>
 
 <script>
-import { Picker } from "emoji-mart-vue";
+import "emoji-mart-vue-fast/css/emoji-mart.css";
+
+import data from "emoji-mart-vue-fast/data/emojione.json";
+import { Picker, EmojiIndex } from "emoji-mart-vue-fast";
+
 import { mapGetters } from "vuex";
 export default {
   components: {
@@ -62,7 +67,10 @@ export default {
       typingTimeout: null,
       filesList: [],
       mediaUrls: [],
-      displayEmojiSelector: false
+      displayEmojiSelector: false,
+      emojiIndex: new EmojiIndex(data, {
+        exclude: ["flags"]
+      })
     };
   },
   computed: {
