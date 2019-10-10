@@ -44,7 +44,7 @@ export default {
 
   .modal-container {
     background: #fff;
-    min-width: 450px;
+    min-width: 320px;
     border-radius: 20px;
     padding: 20px;
     position: relative;

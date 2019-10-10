@@ -9,8 +9,42 @@ $white: linear-gradient(to bottom, #fff, #eee);
 $gray: rgba(100, 100, 100, 1);
 $red: #f25;
 
+@mixin phone {
+  @media screen and (min-width: 576px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (min-width: 768px) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media screen and (min-width: 992px) {
+    @content;
+  }
+}
+@mixin desktop {
+  @media screen and (min-width: 112.5em) {
+    @content;
+  }
+}
+
+body {
+  font-size: 12px;
+
+  @include phone {
+    font-size: 14px;
+  }
+  @include tablet {
+    font-size: 16px;
+  }
+}
+
 .btn {
-  border-radius: 20px;
+  border-radius: 1.25em;
   &:focus {
     box-shadow: none;
   }
@@ -18,7 +52,7 @@ $red: #f25;
 .btn-primary {
   background: $primary;
   border: none;
-  border-radius: 20px;
+  border-radius: 1.25em;
 }
 
 .btn-warning,
@@ -27,10 +61,10 @@ $red: #f25;
 }
 
 .file-input {
-  margin-top: 10px;
+  margin-top: 0.625em;
   color: $gray;
-  border-radius: 30px;
-  padding: 10px;
+  border-radius: 1.875em;
+  padding: 0.625em;
   text-align: center;
   // padding-top: 3px;
   cursor: pointer;
@@ -65,11 +99,11 @@ $red: #f25;
   justify-content: center;
 
   .login-card {
-    width: 450px;
+    width: 25em;
     color: $gray;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0px 3px 10px 2px rgba(100, 100, 100, 0.1);
+    padding: 1.25em;
+    border-radius: 1.25em;
+    box-shadow: 0px 3px 0.625em 2px rgba(100, 100, 100, 0.1);
     text-align: center;
 
     h4 {
@@ -92,7 +126,7 @@ $red: #f25;
       background: $primary;
       border: none;
       margin: 1em 0;
-      border-radius: 20px;
+      border-radius: 1.25em;
     }
   }
 }
@@ -122,7 +156,7 @@ $red: #f25;
   background: $white;
   width: 100%;
   padding: 0;
-  box-shadow: 3px 0 10px 2px rgba(100, 100, 100, 0.1);
+  box-shadow: 3px 0 0.625em 2px rgba(100, 100, 100, 0.1);
   z-index: 10;
   flex: 1;
 
@@ -131,12 +165,13 @@ $red: #f25;
       width: 100%;
       .btn {
         width: 100%;
-        height: 80px;
+        height: 5em;
         border-radius: 0px;
-        padding-top: 20px;
+        padding-top: 0.7em;
         border: none;
-        font-size: 25px;
+        font-size: 1.5em;
         color: $gray;
+        line-height: 0;
 
         &:hover,
         &.active {
@@ -149,8 +184,8 @@ $red: #f25;
         &:after {
           content: "";
           display: block;
-          height: 15px;
-          width: 15px;
+          height: 12px;
+          width: 12px;
           border-radius: 50%;
           border: 2px solid #fff;
           position: absolute;
@@ -170,8 +205,8 @@ $red: #f25;
 
     .auth-user-avatar {
       img {
-        width: 80px;
-        height: 80px;
+        width: 5em;
+        height: 5em;
         border-radius: 50%;
         object-fit: cover;
       }
@@ -185,7 +220,7 @@ $red: #f25;
     }
     .signout {
       background: $primary;
-      margin: 5px 0 50px;
+      margin: 5px 0 3.125em;
       font-size: 0.6em;
       border: none;
       color: transparent;
@@ -208,8 +243,9 @@ $red: #f25;
 header {
   // text-transform: uppercase;
   display: flex;
-  height: 50px;
+  height: 3.125em;
   align-items: center;
+
   h5 {
     font-weight: 700;
     font-size: 1.2em;
@@ -235,8 +271,8 @@ header {
       align-content: flex-end;
 
       .btn {
-        height: 50px;
-        width: 50px;
+        height: 3.125em;
+        width: 3.125em;
         border-radius: 50%;
         color: $gray;
         &:hover {
@@ -248,11 +284,13 @@ header {
   .cr-list {
     box-sizing: border-box;
     position: absolute;
+    overflow-x: hidden;
     overflow-y: auto;
-    height: calc(100% - 80px);
+    height: calc(100% - 5em);
     width: 100%;
     .conversation {
       display: flex;
+
       flex-direction: column;
       flex: 0 0 100%;
       padding: 1em;
@@ -274,7 +312,7 @@ header {
       // 	}
       // }
 
-      max-height: 200px;
+      max-height: 12.5em;
 
       &.unread {
         background: #fff;
@@ -294,11 +332,11 @@ header {
       .cr-info {
         display: flex;
         flex-direction: row;
-        max-height: 100px;
+        max-height: 6.25em;
         .convo-icon {
           background: #ccc;
-          min-width: 100px;
-          min-height: 100px;
+          min-width: 6.25em;
+          min-height: 6.25em;
           border-radius: 50%;
           .cr-icon {
             width: 100%;
@@ -306,11 +344,11 @@ header {
             font-size: 2.5em;
             text-align: center;
             color: $gray;
-            padding-top: 15px;
+            padding-top: 0.4em;
           }
           img {
-            width: 100px;
-            height: 100px;
+            width: 6.25em;
+            height: 6.25em;
             border-radius: 50%;
             object-fit: cover;
           }
@@ -324,7 +362,7 @@ header {
             background: #fff;
             padding: 5px;
             text-align: center;
-            border-radius: 20px;
+            border-radius: 1.25em;
             width: 100%;
             .invitation {
               font-weight: 700;
@@ -334,7 +372,7 @@ header {
               margin: 5px 0;
               .btn {
                 margin-right: 5px;
-                border-radius: 20px;
+                border-radius: 1.25em;
                 font-size: 0.7em;
               }
             }
@@ -342,6 +380,7 @@ header {
 
           .convo-title {
             font-size: 1.1em;
+            width: 12em;
             font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
@@ -351,7 +390,7 @@ header {
           }
 
           .convo-last-msg {
-            height: 80px;
+            height: 5em;
             overflow: hidden;
             line-clamp: 4;
             color: $gray;
@@ -384,6 +423,7 @@ header {
   padding: 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 
   .overlay {
     z-index: 10;
@@ -397,15 +437,20 @@ header {
 
     .text-info-white {
       text-align: center;
-      padding: 10px;
+      padding: 0.625em;
       color: rgba(255, 255, 255, 0.6);
       font-weight: 700;
       font-size: 2em;
     }
   }
   header {
-    padding: 10px;
-    height: 110px;
+    padding: 0.625em;
+    height: 11em;
+
+    @include tablet {
+      height: 130px;
+    }
+
     background: $primary;
     color: #fff;
     display: flex;
@@ -413,13 +458,14 @@ header {
     align-items: flex-start;
 
     .close-conversation {
-      align-self: center;
-      width: 40px;
-      height: 40px;
+      align-self: flex-start;
+      width: 2.5em;
+      height: 2.5em;
 
       .btn-white {
-        width: 40px;
-        height: 40px;
+        width: 2em;
+        height: 2em;
+        padding: 0.1em;
         background: #fff;
         border-radius: 50%;
         color: purple;
@@ -431,28 +477,38 @@ header {
       align-items: center;
       flex: 1;
       img {
-        width: 80px;
-        height: 80px;
+        width: 7.5em;
+        height: 7.5em;
         object-fit: cover;
         border-radius: 50%;
+        @include tablet {
+          height: 100px;
+          width: 100px;
+        }
       }
       .cr-icon {
         justify-self: center;
-        width: 80px;
-        height: 80px;
+        width: 2.5em;
+        height: 2.5em;
         border-radius: 50%;
         background: #fff;
         color: purple;
-        font-size: 45px;
+        font-size: 2.5em;
+        padding-top: 0.35em;
         text-align: center;
       }
 
       .cr-title {
-        margin-left: 10px;
+        margin-left: 0.625em;
         h3 {
-          line-height: 12px;
+          line-height: 1.2em;
           margin-top: 5px;
-          font-size: 24px;
+          font-size: 1.5em;
+          text-overflow: ellipsis;
+          @include tablet {
+            font-size: 1.5em;
+            line-height: 0.75em;
+          }
           font-weight: 700;
         }
         .activity {
@@ -465,9 +521,10 @@ header {
             color: #fff;
             border-radius: 50%;
             border: 1px solid #fff;
-            height: 40px;
-            width: 40px;
-            margin-right: 20px;
+            height: 2.5em;
+            width: 2.5em;
+            font-size: 1.2em;
+            margin-right: 0.7em;
 
             &:hover {
               color: purple;
@@ -480,7 +537,7 @@ header {
   }
 
   .read-by {
-    max-height: 20px;
+    max-height: 1.25em;
     display: flex;
     flex-direction: row;
     opacity: 0.8;
@@ -499,8 +556,8 @@ header {
       .avatar {
         margin-left: 5px;
         img {
-          height: 20px;
-          width: 20px;
+          height: 1.25em;
+          width: 1.25em;
           border-radius: 50%;
           object-fit: cover;
         }
@@ -513,15 +570,15 @@ header {
     flex-direction: row;
     background: transparent;
     padding: 5px 5px 5px 0;
-    margin-top: 10px;
+    margin-top: 0.625em;
     flex-wrap: wrap;
 
     .usr-msg-group {
       display: flex;
       flex-direction: row;
       padding: 5px;
-      max-width: 300px;
-      border-radius: 10px;
+      max-width: 18.75em;
+      border-radius: 0.625em;
       background: #fff;
       box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.1);
       justify-content: center;
@@ -531,8 +588,8 @@ header {
       .avatar {
         img {
           border-radius: 50%;
-          width: 25px;
-          height: 25px;
+          width: 1.5em;
+          height: 1.5em;
           object-fit: cover;
         }
       }
@@ -546,32 +603,44 @@ header {
   }
 
   .chat-view {
+    max-width: none;
     flex: 1;
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    // padding: 20px;
+    // padding: 1.25em;
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
 
     .container {
+      max-width: none;
       position: absolute;
       overflow-y: auto;
       height: 100%;
       flex: 1;
-      padding: 30px 20px;
+      padding: 1.875em 1.25em;
       display: flex;
       flex-direction: column;
 
       .row {
         display: flex;
         flex-direction: column;
+        padding: 0 5px;
 
         .msg-container {
           align-self: flex-start;
           max-width: 80%;
           display: flex;
+
+          .msg-media {
+            margin-bottom: 0.625em;
+            img {
+              max-width: 100%;
+              border-radius: 0.625em;
+            }
+          }
+
           &.sent {
             align-self: flex-end;
 
@@ -582,14 +651,6 @@ header {
               overflow-wrap: break-word;
               display: inline-block;
 
-              .msg-media {
-                margin-bottom: 10px;
-                img {
-                  max-width: 100%;
-                  border-radius: 10px;
-                }
-              }
-
               .msg-time {
                 text-align: right;
                 color: #fff;
@@ -598,24 +659,24 @@ header {
           }
           .usr-img {
             display: inline-block;
-            height: 50px;
-            width: 50px;
+            height: 3.125em;
+            width: 3.125em;
             align-self: center;
-            transform: translateY(-10px);
+            transform: translateY(-0.625em);
             img {
               object-fit: cover;
               border-radius: 50%;
-              height: 50px;
-              width: 50px;
+              height: 3.125em;
+              width: 3.125em;
             }
           }
 
           .msg-group {
             background: #fff;
             box-shadow: 1px 0 5px 1px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            padding: 10px;
-            margin: 0 0 20px 10px;
+            border-radius: 0.625em;
+            padding: 0.625em;
+            margin: 0 0 1.25em 0.625em;
 
             .msg-time {
               margin-top: 5px;
@@ -632,17 +693,26 @@ header {
 }
 
 .msg-form {
-  padding: 30px;
+  padding: 1.875em;
   background: $white;
-  height: 150px;
+  height: 11em;
+
+  @include tablet {
+    height: 160px;
+  }
 
   .form {
     position: relative;
   }
 
   .msg {
-    border-radius: 20px;
-    height: 60px;
+    border-radius: 1.25em;
+    font-size: 1em;
+    height: 3.75em;
+    @include tablet {
+      height: 3.75em;
+    }
+
     &:focus {
       box-shadow: none;
       border: 1px solid #ccc;
@@ -657,15 +727,22 @@ header {
   }
 
   .file-input {
-    margin-top: 10px;
+    margin-top: 0.625em;
     color: $gray;
-    min-height: 30px;
-    min-width: 30px;
-    border-radius: 30px;
+    min-height: 2.3em;
+    min-width: 2.3em;
+    border-radius: 2.3em;
     padding: 5px;
+
     text-align: center;
     // padding-top: 3px;
     cursor: pointer;
+
+    @include tablet {
+      min-height: 1.875em;
+      min-width: 1.875em;
+      border-radius: 1.875em;
+    }
 
     .filename {
       font-size: 0.7em;
@@ -675,8 +752,8 @@ header {
     .btn-close {
       color: $gray;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
+      width: 1.25em;
+      height: 1.25em;
       font-size: 0.5em;
       padding: 0;
       margin-left: 3px;
@@ -693,9 +770,12 @@ header {
   }
 
   .send-btn {
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    width: 60px;
+    border-top-right-radius: 1.25em;
+    border-bottom-right-radius: 1.25em;
+    width: 2.7em;
+    @include tablet {
+      width: 3.75em;
+    }
     color: $gray;
     background: #fff;
     border: 1px solid #ccc;
@@ -728,23 +808,23 @@ header {
   .cr-title {
     display: flex;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 1.25em;
     .avatar {
       img {
-        width: 100px;
-        height: 100px;
+        width: 6.25em;
+        height: 6.25em;
         object-fit: cover;
         border-radius: 50%;
       }
       .cr-icon {
-        height: 100px;
-        width: 100px;
+        height: 3em;
+        width: 3em;
         font-size: 2em;
         color: $gray;
         background: #eaeaea;
         border-radius: 50%;
         text-align: center;
-        padding-top: 20px;
+        padding-top: 0.5em;
       }
     }
 
@@ -753,7 +833,7 @@ header {
       .btn,
       .form-control {
         font-size: 0.7em;
-        border-radius: 20px;
+        border-radius: 1.25em;
       }
       #cr-new-avatar-img {
         opacity: 0;
@@ -763,16 +843,16 @@ header {
     }
   }
   .invitation {
-    margin: 20px 0;
+    margin: 1.25em 0;
     .form-control {
       display: inline-block;
-      width: 200px;
+      width: 12.5em;
       font-size: 0.8em;
-      height: 30px;
-      border-radius: 20px;
+      height: 1.875em;
+      border-radius: 1.25em;
     }
     .btn {
-      padding: 6px 10px;
+      padding: 6px 0.625em;
       font-size: 0.7em;
     }
   }
@@ -780,7 +860,7 @@ header {
     display: flex;
     position: relative;
     overflow: hidden;
-    height: 400px;
+    height: 25em;
 
     .members,
     .invited {
@@ -802,15 +882,15 @@ header {
         padding: 5px;
         display: flex;
         align-items: center;
-        height: 70px;
+        height: 4.375em;
         width: 100%;
         .avatar {
-          width: 50px;
-          height: 50px;
+          width: 3.125em;
+          height: 3.125em;
 
           img {
-            width: 50px;
-            height: 50px;
+            width: 3.125em;
+            height: 3.125em;
             border-radius: 50%;
             object-fit: cover;
           }

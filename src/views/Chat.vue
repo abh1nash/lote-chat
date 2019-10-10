@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="d-flex">
-      <TheNav :class="['col-sm-3', 'col-md-2', 'col-lg-2', 'col-xl-1']" @showModal="displayModal" />
+      <TheNav
+        :class="[{'d-none': !!activeConversation}, 'd-md-flex', 'col-sm-3', 'col-md-2', 'col-lg-2', 'col-xl-1']"
+        @showModal="displayModal"
+      />
       <ConversationList
         v-if="activeList=='conversation'"
         :class="[{'d-none': !!activeConversation},'col-sm-9', 'd-lg-block','col-md-10', 'col-lg-4']"
@@ -13,7 +16,7 @@
         @showModal="displayModal"
       />
       <MessagesList
-        :class="[{'d-none': !activeConversation}, 'col-sm-9', 'd-lg-flex', 'col-lg-6','col-xl-7']"
+        :class="[!activeConversation?'d-none': 'd-flex', 'col-sm-12', 'd-lg-flex', 'col-md-10', 'col-lg-6','col-xl-7']"
         @showModal="displayModal"
       />
     </div>
