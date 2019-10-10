@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import "firebase/firestore";
 import "firebase/auth";
 import Vue from "vue";
 export default {
@@ -251,7 +252,9 @@ export default {
           {
             collection: "users",
             document: rootState.authUserId,
-            data: { lastActivity: Date.now() }
+            data: {
+              lastActivity: firebase.firestore.Timestamp.now().toMillis()
+            }
           },
           { root: true }
         )
@@ -378,7 +381,7 @@ export default {
               name,
               phone,
               avatar,
-              lastActivity: Date.now()
+              lastActivity: firebase.firestore.Timestamp.now().toMillis()
             }
           },
           { root: true }

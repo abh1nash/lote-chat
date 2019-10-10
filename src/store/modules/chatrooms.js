@@ -1,6 +1,7 @@
 import Vue from "vue";
 import firebase from "firebase/app";
 import "firebase/database";
+import "firebase/firestore";
 
 export default {
   namespaced: true,
@@ -162,7 +163,7 @@ export default {
                 },
                 msgCount: 0,
                 lastMsg: null,
-                lastMsgTime: Date.now(),
+                lastMsgTime: firebase.firestore.Timestamp.now().toMillis(),
                 unread: {}
               };
 
@@ -211,9 +212,11 @@ export default {
 
     typingMode({ commit }, { crId, uid, content }) {
       const rtd = firebase.database();
-      rtd
-        .ref(`${crId}/${uid}`)
-        .set({ content, lastKeyStroke: Date.now(), user: uid });
+      rtd.ref(`${crId}/${uid}`).set({
+        content,
+        lastKeyStroke: firebase.firestore.Timestamp.now().toMillis(),
+        user: uid
+      });
     },
 
     typingEnd({ commit }, { crId, uid }) {

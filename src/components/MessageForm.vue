@@ -11,6 +11,7 @@
         />
         <div class="input-group-append">
           <button
+            type="button"
             @click.prevent="displayEmojiSelector=!displayEmojiSelector"
             title="Insert Emoji"
             class="emoji-btn btn btn-primary"
