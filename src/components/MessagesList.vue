@@ -43,6 +43,9 @@
           </div>
         </div>
       </div>
+      <div class="d-lg-none close-conversation">
+        <button @click="closeChat" class="btn btn-white" title="Close Conversation">&#x2715;</button>
+      </div>
     </header>
 
     <div class="chat-view">
@@ -68,6 +71,9 @@ export default {
     viewedMsg() {
       if (!this.activeConversation) return;
       this.$store.dispatch("chatrooms/viewedChatroom");
+    },
+    closeChat() {
+      this.$store.dispatch("updateActiveRoom");
     }
   },
 

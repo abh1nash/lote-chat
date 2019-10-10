@@ -409,12 +409,27 @@ header {
     background: $primary;
     color: #fff;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+
+    .close-conversation {
+      align-self: center;
+      width: 40px;
+      height: 40px;
+
+      .btn-white {
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border-radius: 50%;
+        color: purple;
+      }
+    }
 
     .cr-info {
       display: flex;
       align-items: center;
+      flex: 1;
       img {
         width: 80px;
         height: 80px;
