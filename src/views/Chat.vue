@@ -63,10 +63,6 @@ export default {
       activeList: "activeChatroomList",
       activeConversation: "activeConversation"
     })
-  },
-
-  mounted() {
-    console.log(!this.activeConversation);
   }
 };
 </script>

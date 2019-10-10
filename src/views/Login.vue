@@ -12,14 +12,21 @@
       <button @click.prevent="googleLogin" class="btn btn-primary google-login">
         <font-awesome-icon :icon="['fab','google']" class="mr-3" />Login with Google
       </button>
+      <div v-if="error" class="alert alert-danger">{{error}}</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      error: ""
+    };
+  },
   methods: {
     googleLogin() {
+      this.error = "";
       this.$store
         .dispatch("users/googleLogin")
         .then(() => {
@@ -34,7 +41,7 @@ export default {
             });
         })
         .catch(err => {
-          console.log(err);
+          this.error = err.message;
         });
     }
   }

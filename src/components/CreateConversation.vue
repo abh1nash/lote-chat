@@ -20,6 +20,7 @@
         <button class="modal-btn btn btn-primary" type="submit">Create Conversation</button>
       </div>
     </form>
+    <div v-if="error" class="alert alert-danger">{{error}}</div>
   </div>
 </template>
 
@@ -28,7 +29,8 @@ export default {
   data() {
     return {
       title: "",
-      email: ""
+      email: "",
+      error: ""
     };
   },
   methods: {
@@ -39,11 +41,10 @@ export default {
           email: this.email
         })
         .then(crId => {
-          console.log(crId);
           this.$emit("eventSuccess");
         })
         .catch(err => {
-          console.log(err);
+          this.error = err.message;
         });
     }
   }

@@ -13,6 +13,8 @@
       <div class="buttons">
         <button class="modal-btn btn btn-primary" type="submit">Join Conversation</button>
       </div>
+
+      <div v-if="error" class="alert alert-danger">{{error}}</div>
     </form>
   </div>
 </template>
@@ -21,7 +23,8 @@
 export default {
   data() {
     return {
-      crId: ""
+      crId: "",
+      error: ""
     };
   },
   methods: {
@@ -42,10 +45,10 @@ export default {
                 this.$emit("eventSuccess");
               })
               .catch(err => {
-                console.log(err);
+                this.error = err.message;
               });
           } else {
-            console.log("Not eligible to join that room.");
+            this.error = "Not eligible to join that room.";
           }
         });
     }

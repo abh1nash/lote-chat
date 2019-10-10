@@ -4,6 +4,7 @@
       <div class="input-group">
         <input
           class="msg form-control"
+          v-model="content"
           @input="content=$event.target.value"
           type="text"
           placeholder="What do you wish to say?"
@@ -46,6 +47,7 @@
         :showCategories="false"
         @select="addEmoji"
       />
+      <div v-if="error" class="alert alert-danger d-inline-block float-right mt-2">{{error}}</div>
     </form>
   </div>
 </template>
@@ -68,6 +70,7 @@ export default {
       typingTimeout: null,
       filesList: [],
       mediaUrls: [],
+      error: "",
       displayEmojiSelector: false,
       emojiIndex: new EmojiIndex(data, {
         exclude: ["flags"]
@@ -153,7 +156,7 @@ export default {
             this.type = "text";
           })
           .catch(err => {
-            console.log(err);
+            this.error = err.message;
           });
       }
     }
