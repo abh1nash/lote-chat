@@ -18,6 +18,8 @@ Then, create a local clone for the project.
 
 After setting up the project, Firebase's project configuration need to be placed in the `.env.local` file on the root directory of the project in the same format as presented in the `.env.local.sample` file.
 
+It is also recommended to set up [Firebase Security Rules](https://firebase.google.com/docs/rules) to limit user access.
+
 Then `npm` scripts can be run to test or build the app.
 
     npm run serve 	//to start the app in development
@@ -31,5 +33,6 @@ I might visit the project sometime in the future and add some of the following f
 - Custom Server
 - Reactions to messages
 - Better design for modals
+- Other functionalities that I am not currently able to think of
 
 If anyone wants to make contributions of any kind, you are always welcome!
