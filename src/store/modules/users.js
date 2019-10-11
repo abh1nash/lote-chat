@@ -161,6 +161,23 @@ export default {
     },
     declineInvite({ dispatch, rootGetters }, { crId, uid }) {
       return new Promise((resolve, reject) => {
+        let chatroomDeleted = false;
+        if (rootGetters["chatrooms/chatroomAssociatedUsers"](crId) == 2) {
+          dispatch(
+            "chatrooms/deleteChatroom",
+            {
+              crId,
+              uid: rootGetters["chatrooms/chatroomInitiator"](crId)
+            },
+            { root: true }
+          )
+            .then(() => {
+              chatroomDeleted = true;
+            })
+            .catch(err => {
+              reject(err);
+            });
+        }
         const deleteInvite = dispatch(
           "deleteFieldValue",
           {
@@ -170,41 +187,22 @@ export default {
           },
           { root: true }
         );
-        const deleteInviteFromChatroom = dispatch(
-          "deleteFieldValue",
-          {
-            collection: "chatrooms",
-            document: crId,
-            fieldValue: [`invited.${uid}`]
-          },
-          { root: true }
-        );
+        const deleteInviteFromChatroom = chatroomDeleted
+          ? new Promise(res => {
+              res();
+            })
+          : dispatch(
+              "deleteFieldValue",
+              {
+                collection: "chatrooms",
+                document: crId,
+                fieldValue: [`invited.${uid}`]
+              },
+              { root: true }
+            );
         Promise.all([deleteInvite, deleteInviteFromChatroom])
           .then(() => {
-            dispatch("chatrooms/fetchChatroom", crId, { root: true })
-              .then(() => {
-                if (
-                  rootGetters["chatrooms/chatroomAssociatedUsers"](crId) < 2
-                ) {
-                  dispatch(
-                    "chatrooms/deleteChatroom",
-                    {
-                      crId,
-                      uid: rootGetters["chatrooms/chatroomInitiator"](crId)
-                    },
-                    { root: true }
-                  )
-                    .then(() => {
-                      resolve();
-                    })
-                    .catch(err => {
-                      reject(err);
-                    });
-                }
-              })
-              .catch(err => {
-                reject(err);
-              });
+            resolve();
           })
           .catch(err => {
             reject(err);
