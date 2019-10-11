@@ -73,6 +73,14 @@ export default {
       this.$store.dispatch("chatrooms/viewedChatroom");
     },
     closeChat() {
+      this.$store.dispatch("listeners/stopListening", {
+        name: "messages",
+        id: this.activeConversation
+      });
+      this.typingStatusUpd({
+        crId: this.activeConversation,
+        stop: true
+      });
       this.$store.dispatch("updateActiveRoom");
     }
   },

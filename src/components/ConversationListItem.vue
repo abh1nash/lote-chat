@@ -202,45 +202,51 @@ export default {
   },
 
   created() {
-    this.fetchChatroom(this.crId).then(({ members, invited, type }) => {
-      if (this.peopleList && type == "group") return;
+    this.fetchChatroom(this.crId)
+      .then(({ members, invited, type }) => {
+        if (this.peopleList && type == "group") return;
 
-      this.listenChatroom(this.crId);
+        this.listenChatroom(this.crId);
 
-      if (this.unread || this.invite) {
-        this.notify({ crId: this.crId });
-      }
+        if (this.unread || this.invite) {
+          this.notify({ crId: this.crId });
+        }
 
-      if (this.chatroomAssociatedUsers(this.crId) < 2) {
-        this.deleteChatroom();
-      } else {
-        let fetchUsers = [...this.members, ...this.invited].map(user => {
-          return new Promise((resolve, reject) => {
-            this.fetchUser(user)
-              .then(() => {
-                if (
-                  user != this.authUser &&
-                  !Object.keys(this.$store.state.listeners.users).includes(user)
-                ) {
-                  this.listenUser(user);
-                }
-                resolve();
-              })
-              .catch(err => {
-                reject(err);
-              });
+        if (this.chatroomAssociatedUsers(this.crId) < 2) {
+          this.deleteChatroom();
+        } else {
+          let fetchUsers = [...this.members, ...this.invited].map(user => {
+            return new Promise((resolve, reject) => {
+              this.fetchUser(user)
+                .then(() => {
+                  if (
+                    user != this.authUser &&
+                    !Object.keys(this.$store.state.listeners.users).includes(
+                      user
+                    )
+                  ) {
+                    this.listenUser(user);
+                  }
+                  resolve();
+                })
+                .catch(err => {
+                  reject(err);
+                });
+            });
           });
-        });
 
-        Promise.all(fetchUsers)
-          .then(() => {
-            this.fetched();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-    });
+          Promise.all(fetchUsers)
+            .then(() => {
+              this.fetched();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
 
   updated() {

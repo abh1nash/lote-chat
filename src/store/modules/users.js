@@ -105,28 +105,6 @@ export default {
     },
     acceptInvite({ dispatch, rootGetters }, { crId, uid }) {
       return new Promise((resolve, reject) => {
-        //delete invite entry from user db
-        const deleteInvite = dispatch(
-          "deleteFieldValue",
-          {
-            collection: "users",
-            document: uid,
-            fieldValue: [`invites.${crId}`]
-          },
-          { root: true }
-        );
-        //add chatroom to user's chatroom list
-        const addChatroomToUser = dispatch("addChatroomToUser", { crId, uid });
-        //delete user from chatroom's invite list
-        const deleteInviteFromChatroom = dispatch(
-          "deleteFieldValue",
-          {
-            collection: "chatrooms",
-            document: crId,
-            fieldValue: [`invited.${uid}`]
-          },
-          { root: true }
-        );
         //add user to chatroom's members
         let chatroomType =
           Object.keys(rootGetters["chatrooms/chatroomInfo"](crId).members)
@@ -140,6 +118,29 @@ export default {
             collection: "chatrooms",
             document: crId,
             data: { [`members.${uid}`]: uid, type: chatroomType }
+          },
+          { root: true }
+        );
+        //add chatroom to user's chatroom list
+        const addChatroomToUser = dispatch("addChatroomToUser", { crId, uid });
+        //delete invite entry from user db
+        const deleteInvite = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "users",
+            document: uid,
+            fieldValue: [`invites.${crId}`]
+          },
+          { root: true }
+        );
+
+        //delete user from chatroom's invite list
+        const deleteInviteFromChatroom = dispatch(
+          "deleteFieldValue",
+          {
+            collection: "chatrooms",
+            document: crId,
+            fieldValue: [`invited.${uid}`]
           },
           { root: true }
         );
