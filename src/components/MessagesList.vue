@@ -77,7 +77,7 @@ export default {
         name: "messages",
         id: this.activeConversation
       });
-      this.typingStatusUpd({
+      this.$store.dispatch("chatrooms/typingStatusUpd", {
         crId: this.activeConversation,
         stop: true
       });
