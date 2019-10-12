@@ -83,11 +83,13 @@ export default {
       .collection(collection)
       .doc(document)
       .onSnapshot(doc => {
-        commit("setItem", {
-          parent: collection,
-          name: document,
-          value: doc.data()
-        });
+        doc.metadata.hasPendingWrites
+          ? null
+          : commit("setItem", {
+              parent: collection,
+              name: document,
+              value: doc.data()
+            });
       });
 
     dispatch("listeners/addListener", {

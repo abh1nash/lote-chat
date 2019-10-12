@@ -115,10 +115,12 @@ export default {
         .onSnapshot(snapshot => {
           //add everything from the first snapshot
           let msgs = snapshot.docs.map(doc => doc.data());
-          commit("setMessages", {
-            crId,
-            msgs
-          });
+          snapshot.metadata.hasPendingWrites
+            ? null
+            : commit("setMessages", {
+                crId,
+                msgs
+              });
           dispatch("updateActiveRoom", crId, { root: true });
         });
 
