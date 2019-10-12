@@ -32,6 +32,11 @@ const router = new Router({
       beforeEnter(to, from, next) {
         store.dispatch("users/signOut").then(() => next({ name: "login" }));
       }
+    },
+    {
+      path: "*",
+      name: "notfound",
+      redirect: "/"
     }
   ]
 });
