@@ -252,7 +252,7 @@ export default {
             collection: "users",
             document: rootState.authUserId,
             data: {
-              lastActivity: firebase.firestore.Timestamp.now().toMillis()
+              lastActivity: firebase.firestore.FieldValue.serverTimestamp()
             }
           },
           { root: true }
@@ -380,7 +380,7 @@ export default {
               name,
               phone,
               avatar,
-              lastActivity: firebase.firestore.Timestamp.now().toMillis()
+              lastActivity: firebase.firestore.FieldValue.serverTimestamp()
             }
           },
           { root: true }

@@ -17,12 +17,20 @@ export default {
   },
   computed: {
     fullDate() {
-      return moment(this.date);
+      if (typeof this.date === "number") {
+        return moment(this.date);
+      } else {
+        return moment(this.date.toDate());
+      }
     }
   },
   methods: {
     dateFromNow() {
-      this.parsedDate = moment(this.date).fromNow();
+      if (typeof this.date === "number") {
+        this.parsedDate = moment(this.date).fromNow();
+      } else {
+        this.parsedDate = moment(this.date.toDate()).fromNow();
+      }
     }
   },
   mounted() {

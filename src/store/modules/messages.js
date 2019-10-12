@@ -33,7 +33,7 @@ export default {
             happy: {},
             angry: {}
           },
-          time: firebase.firestore.Timestamp.now().toMillis()
+          time: firebase.firestore.FieldValue.serverTimestamp()
         };
 
         let unread = {

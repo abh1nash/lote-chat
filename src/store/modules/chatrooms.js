@@ -163,7 +163,7 @@ export default {
                 },
                 msgCount: 0,
                 lastMsg: null,
-                lastMsgTime: firebase.firestore.Timestamp.now().toMillis(),
+                lastMsgTime: firebase.firestore.FieldValue.serverTimestamp(),
                 unread: {}
               };
 
@@ -214,7 +214,7 @@ export default {
       const rtd = firebase.database();
       rtd.ref(`${crId}/${uid}`).set({
         content,
-        lastKeyStroke: firebase.firestore.Timestamp.now().toMillis(),
+        lastKeyStroke: firebase.firestore.FieldValue.serverTimestamp(),
         user: uid
       });
     },
