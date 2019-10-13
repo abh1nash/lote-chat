@@ -66,7 +66,10 @@ export default {
       authUser: "authUser"
     }),
 
-    ...mapState({ msgsReadyStatus: "msgsReadyStatus" }),
+    ...mapState({
+      msgsReadyStatus: "msgsReadyStatus",
+      dateDifference: "dateDifference"
+    }),
     active() {
       return this.crId == this.activeConversation;
     },
@@ -252,6 +255,17 @@ export default {
   updated() {
     if (this.unread || this.invite) {
       this.notify({ crId: this.crId });
+
+      if (
+        (this.crId != this.activeConversation &&
+          Math.abs(
+            this.chatroomInfo(this.crId).lastMsgTime.toMillis() -
+              (Date.now() + this.dateDifference)
+          ) < 60000) ||
+        document.visibilityState == "hidden"
+      ) {
+        navigator.vibrate([450, 100, 450]);
+      }
     }
   },
 
