@@ -4,6 +4,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
 export default {
   props: {
     date: {
@@ -16,20 +17,35 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      dateDifference: "dateDifference"
+    }),
     fullDate() {
-      if (typeof this.date === "number") {
-        return moment(this.date);
+      if (this.date) {
+        if (typeof this.date === "number") {
+          return moment(this.date);
+        } else {
+          return moment(this.date.toDate());
+        }
       } else {
-        return moment(this.date.toDate());
+        return "just now";
       }
     }
   },
   methods: {
     dateFromNow() {
-      if (typeof this.date === "number") {
-        this.parsedDate = moment(this.date).fromNow();
+      if (this.date) {
+        if (typeof this.date === "number") {
+          this.parsedDate = moment(this.date)
+            .add(this.dateDifference, "ms")
+            .fromNow();
+        } else {
+          this.parsedDate = moment(this.date.toDate())
+            .add(this.dateDifference, "ms")
+            .fromNow();
+        }
       } else {
-        this.parsedDate = moment(this.date.toDate()).fromNow();
+        this.parsedDate = "just now";
       }
     }
   },

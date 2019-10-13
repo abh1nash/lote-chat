@@ -83,13 +83,11 @@ export default {
       .collection(collection)
       .doc(document)
       .onSnapshot(doc => {
-        doc.metadata.hasPendingWrites
-          ? null
-          : commit("setItem", {
-              parent: collection,
-              name: document,
-              value: doc.data()
-            });
+        commit("setItem", {
+          parent: collection,
+          name: document,
+          value: doc.data()
+        });
       });
 
     dispatch("listeners/addListener", {
@@ -130,6 +128,13 @@ export default {
   },
   updateActiveRoom({ commit, getters }, crId) {
     commit("setItem", { name: "activeConversation", value: crId });
+  },
+
+  setDateDifference({ commit }, serverTime) {
+    commit("setItem", {
+      name: "dateDifference",
+      value: Date.now() - serverTime.toMillis()
+    });
   },
 
   msgsNotReady({ commit }) {

@@ -30,7 +30,7 @@ import ConversationList from "@/components/ConversationList";
 import PeopleList from "@/components/PeopleList";
 import MessagesList from "@/components/MessagesList";
 import ModalOverlay from "@/components/ModalOverlay";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -62,7 +62,17 @@ export default {
     ...mapState({
       activeList: "activeChatroomList",
       activeConversation: "activeConversation"
+    }),
+    ...mapGetters({
+      authId: "authUser",
+      userInfo: "users/userInfo"
     })
+  },
+  created() {
+    this.$store.dispatch(
+      "setDateDifference",
+      this.userInfo(this.authId).lastActivity
+    );
   }
 };
 </script>
