@@ -380,7 +380,7 @@ export default {
               name,
               phone,
               avatar,
-              lastActivity: firebase.firestore.FieldValue.serverTimestamp().toDate()
+              lastActivity: firebase.firestore.FieldValue.serverTimestamp()
             }
           },
           { root: true }
